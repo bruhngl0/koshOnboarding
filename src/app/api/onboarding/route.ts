@@ -66,33 +66,43 @@ export const POST = withErrorHandler(async (request: Request) => {
   const h = validatedData.height / 100;
   const bmi = w / (h * h);
   
+  // Helper to normalize empty strings/placeholder values (like "none", "nil") to database NULL
+  const cleanInput = (val: string | null | undefined): string | null => {
+    if (val === undefined || val === null) return null;
+    const trimmed = val.trim();
+    if (trimmed === '' || trimmed.toLowerCase() === 'none' || trimmed.toLowerCase() === 'nil') {
+      return null;
+    }
+    return trimmed;
+  };
+
   // Insert submission into database
   await db.insert(onboardingSubmissions).values({
     ref,
-    name: validatedData.name,
-    phone: validatedData.phone,
-    email: validatedData.email,
+    name: validatedData.name.trim(),
+    phone: validatedData.phone.trim(),
+    email: validatedData.email.trim(),
     dob: validatedData.dob,
     age: validatedData.age,
-    gender: validatedData.gender,
+    gender: cleanInput(validatedData.gender),
     weight: validatedData.weight.toString(),
     height: validatedData.height.toString(),
     targetWeight: validatedData.targetWeight ? validatedData.targetWeight.toString() : null,
     bmi: bmi.toFixed(2),
-    goal: validatedData.goal,
-    activity: validatedData.activity,
+    goal: cleanInput(validatedData.goal),
+    activity: cleanInput(validatedData.activity),
     diet: validatedData.diet,
-    spice: validatedData.spice,
+    spice: cleanInput(validatedData.spice),
     allergies: validatedData.allergies,
     cuisines: validatedData.cuisines,
-    favDish: validatedData.favDish,
-    dislikes: validatedData.dislikes,
-    medical: validatedData.medical,
-    deliveryPlan: validatedData.deliveryPlan,
-    address: validatedData.address,
-    landmark: validatedData.landmark,
-    deliveryNote: validatedData.deliveryNote,
-    notes: validatedData.notes,
+    favDish: cleanInput(validatedData.favDish),
+    dislikes: cleanInput(validatedData.dislikes),
+    medical: cleanInput(validatedData.medical),
+    deliveryPlan: cleanInput(validatedData.deliveryPlan),
+    address: validatedData.address.trim(),
+    landmark: cleanInput(validatedData.landmark),
+    deliveryNote: cleanInput(validatedData.deliveryNote),
+    notes: cleanInput(validatedData.notes),
   });
   
   // Invalidate cache for admin dashboard list so new submission is visible

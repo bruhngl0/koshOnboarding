@@ -246,9 +246,11 @@ export default function OnboardingForm() {
     return (
       <div className="success-screen">
         <div className="success-mark">✦</div>
-        <h2>Welcome to <em>Kōsh</em></h2>
-        <p>Your profile is in our hands. We'll be in touch within 24 hours to begin building your personalised meal cycle.</p>
-        <div className="success-ref">{submittedRef}</div>
+        <h2>Thank You</h2>
+        <p>You have been successfully added to our waitlist. We will get back to you soon.</p>
+        <div className="success-ref" style={{ marginTop: '16px', fontSize: '14px', letterSpacing: '0.1em', opacity: 0.8 }}>
+          Reference Code: <strong>{submittedRef}</strong>
+        </div>
         <br />
         <button type="button" className="btn-new" onClick={resetForm}>Submit another</button>
       </div>

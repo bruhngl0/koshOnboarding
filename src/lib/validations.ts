@@ -2,7 +2,11 @@ import { z } from 'zod';
 
 export const personalStepSchema = z.object({
   name: z.string().trim().min(1, 'Name is required').max(100, 'Name is too long'),
-  phone: z.string().trim().min(1, 'Phone is required').max(30, 'Phone is too long'),
+  phone: z.string()
+    .trim()
+    .min(1, 'Phone is required')
+    .max(15, 'Phone number must be at most 15 digits')
+    .regex(/^\+?[0-9]{10,14}$/, 'Invalid phone number format (only numbers allowed, 10 to 14 digits)'),
   email: z.string().trim().email('Invalid email address').min(1, 'Email is required'),
   dob: z.string().min(1, 'Date of birth is required'),
   age: z.coerce.number().optional().nullable(),

@@ -154,7 +154,13 @@ export default function OnboardingForm() {
   const handleTextChange = (key: keyof typeof INITIAL_STATE) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
-    const val = e.target.value;
+    let val = e.target.value;
+
+    // Direct phone number input-level sanitization to enforce numeric/plus symbols only
+    if (key === 'phone') {
+      val = val.replace(/(?!^\+)[^\d]/g, '');
+    }
+
     setFormData(prev => ({ ...prev, [key]: val }));
     if (errors[key]) {
       setErrors(prev => {
@@ -218,13 +224,13 @@ export default function OnboardingForm() {
         body: JSON.stringify(formData),
       });
 
-      const data = await response.json();
+      const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Submission failed. Please check your data.');
+        throw new Error(result.error?.message || 'Submission failed. Please check your data.');
       }
 
-      setSubmittedRef(data.ref);
+      setSubmittedRef(result.data?.ref || 'Submitted');
     } catch (err: any) {
       setSubmitError(err.message || 'An error occurred during submission.');
     } finally {

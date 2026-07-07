@@ -45,7 +45,7 @@ async function runOnboardingTests() {
       landmark: 'Near Starbucks'
     };
 
-    const res = await fetchWithBypass('http://localhost:3000/api/onboarding', {
+    const res = await fetchWithBypass('http://localhost:3005/api/onboarding', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(validPayload)
@@ -69,7 +69,7 @@ async function runOnboardingTests() {
       weight: -10 // Invalid weight
     };
 
-    const res = await fetchWithBypass('http://localhost:3000/api/onboarding', {
+    const res = await fetchWithBypass('http://localhost:3005/api/onboarding', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(invalidPayload)
@@ -103,7 +103,7 @@ async function runOnboardingTests() {
       maliciousField: 'DROP TABLE onboarding_submissions;' // Extra field
     };
 
-    const res = await fetchWithBypass('http://localhost:3000/api/onboarding', {
+    const res = await fetchWithBypass('http://localhost:3005/api/onboarding', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(extraFieldsPayload)
@@ -126,7 +126,7 @@ async function runOnboardingTests() {
 
     // Fire requests quickly WITHOUT rate limit bypass header to trip the limiter
     for (let i = 0; i < 15; i++) {
-      const res = await fetch('http://localhost:3000/api/onboarding', {
+      const res = await fetch('http://localhost:3005/api/onboarding', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -162,7 +162,7 @@ async function runAdminAuthTests() {
 
   // Error Path: Submissions GET without cookie token (401 Unauthorized)
   try {
-    const res = await fetchWithBypass('http://localhost:3000/api/admin/submissions', {
+    const res = await fetchWithBypass('http://localhost:3005/api/admin/submissions', {
       method: 'GET'
     });
     const body = await res.json();
@@ -177,7 +177,7 @@ async function runAdminAuthTests() {
 
   // Error Path: Admin Login with incorrect password (401 Unauthorized)
   try {
-    const res = await fetchWithBypass('http://localhost:3000/api/admin/login', {
+    const res = await fetchWithBypass('http://localhost:3005/api/admin/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ secret: 'wrong-password' })
@@ -197,7 +197,7 @@ async function runHealthTests() {
 
   // Liveness Check
   try {
-    const res = await fetchWithBypass('http://localhost:3000/health/live');
+    const res = await fetchWithBypass('http://localhost:3005/health/live');
     const body = await res.json();
 
     assert(res.status === 200, `Liveness probe should return 200 (Got ${res.status})`);
@@ -209,7 +209,7 @@ async function runHealthTests() {
 
   // Readiness Check
   try {
-    const res = await fetchWithBypass('http://localhost:3000/health/ready');
+    const res = await fetchWithBypass('http://localhost:3005/health/ready');
 
     // Ready should return 200 or 503 depending on database status
     assert(res.status === 200 || res.status === 503, `Readiness probe should return 200 or 503 (Got ${res.status})`);

@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kōsh — New Client Onboarding</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F7F3EE;
+  --parchment: #EDE7DC;
+  --surface: #FFFFFF;
+  --ink: #1E1B16;
+  --charcoal: #3A3530;
+  --stone: #8A7E72;
+  --sand: #C8BAA8;
+  --border: #D9CFC2;
+  --copper: #8B5E3C;
+  --copper-lt: #C4895A;
+  --copper-dim: #6B4528;
+  --copper-bg: #F2EAE0;
+  --copper-glow: rgba(139,94,60,.18);
+  --gr: #2A6B45;
+  --gr-bg: #EAF4EE;
+  --re: #A0342A;
+  --amber: #9A6A10;
+  --ff-d: 'Cormorant Garamond', Georgia, serif;
+  --ff-s: 'Jost', sans-serif;
+  --step: 0;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--ff-s);
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── GRAIN OVERLAY ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; opacity: .5;
+}
+
+/* ── LAYOUT ── */
+.page-wrap {
+  position: relative; z-index: 1;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+}
+
+/* ── HEADER ── */
+.form-header {
+  text-align: center;
+  margin-bottom: 52px;
+  animation: fadeUp .7s ease both;
+}
+.form-header .logo {
+  font-family: var(--ff-d);
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  color: var(--copper);
+  margin-bottom: 18px;
+  display: block;
+}
+.form-header h1 {
+  font-family: var(--ff-d);
+  font-size: clamp(34px, 5vw, 52px);
+  font-weight: 300;
+  color: var(--ink);
+  line-height: 1.08;
+  letter-spacing: -.01em;
+  margin-bottom: 12px;
+}
+.form-header h1 em {
+  font-style: italic;
+  color: var(--copper);
+}
+.form-header p {
+  font-size: 14px;
+  color: var(--stone);
+  font-weight: 300;
+  letter-spacing: .02em;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+/* ── PROGRESS ── */
+.progress-rail {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 48px;
+  animation: fadeUp .7s .1s ease both;
+}
+.prog-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  max-width: 100px;
+  cursor: pointer;
+  transition: opacity .2s;
+}
+.prog-step:not(.done):not(.active) { opacity: .4; }
+.prog-dot {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--ff-d); font-size: 13px; font-weight: 500;
+  color: var(--stone);
+  transition: all .3s;
+  position: relative; z-index: 1;
+}
+.prog-step.active .prog-dot {
+  border-color: var(--copper);
+  background: var(--copper);
+  color: #fff;
+  box-shadow: 0 0 0 4px var(--copper-glow);
+}
+.prog-step.done .prog-dot {
+  border-color: var(--gr);
+  background: var(--gr);
+  color: #fff;
+}
+.prog-step.done .prog-dot::after {
+  content: '✓';
+  font-size: 11px;
+  position: absolute;
+}
+.prog-step.done .prog-dot span { display: none; }
+.prog-label {
+  font-size: 9.5px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--stone);
+  font-weight: 500;
+  text-align: center;
+}
+.prog-step.active .prog-label { color: var(--copper); }
+.prog-line {
+  flex: 1; height: 1px;
+  background: var(--border);
+  max-width: 40px;
+  margin-top: -14px;
+  transition: background .3s;
+}
+.prog-line.done { background: var(--gr); }
+
+/* ── FORM STEPS ── */
+.form-step {
+  display: none;
+  animation: stepIn .45s cubic-bezier(.4,0,.2,1) both;
+}
+.form-step.active { display: block; }
+.form-step.exit { animation: stepOut .3s ease both; }
+
+@keyframes stepIn {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes stepOut {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(-12px); }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── SECTION TITLE ── */
+.step-title {
+  font-family: var(--ff-d);
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 4px;
+  letter-spacing: -.01em;
+}
+.step-title em { font-style: italic; color: var(--copper); }
+.step-subtitle {
+  font-size: 13px;
+  color: var(--stone);
+  font-weight: 300;
+  margin-bottom: 32px;
+  letter-spacing: .02em;
+}
+
+/* ── FIELD GROUPS ── */
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.field-row.three { grid-template-columns: 1fr 1fr 1fr; }
+.field-row.full { grid-template-columns: 1fr; }
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.field.full { grid-column: 1 / -1; }
+
+label {
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--stone);
+}
+label .req { color: var(--copper); margin-left: 2px; }
+
+input[type=text],
+input[type=number],
+input[type=tel],
+input[type=date],
+input[type=email],
+textarea,
+select {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 11px 14px;
+  font-family: var(--ff-s);
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--ink);
+  outline: none;
+  transition: border .2s, box-shadow .2s, background .2s;
+  appearance: none;
+  -webkit-appearance: none;
+}
+input::placeholder, textarea::placeholder { color: var(--sand); }
+input:focus, textarea:focus, select:focus {
+  border-color: var(--copper);
+  box-shadow: 0 0 0 3px var(--copper-glow);
+  background: #FFFCF9;
+}
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238A7E72' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+  cursor: pointer;
+}
+textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+
+/* Input with unit suffix */
+.input-unit {
+  position: relative;
+}
+.input-unit input { padding-right: 44px; }
+.input-unit .unit {
+  position: absolute; right: 12px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 11px; font-weight: 500;
+  color: var(--stone); letter-spacing: .04em;
+  pointer-events: none;
+}
+
+/* ── PILL SELECTORS ── */
+.pill-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 2px;
+}
+.pill {
+  padding: 7px 16px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  font-family: var(--ff-s);
+  font-size: 12.5px;
+  font-weight: 400;
+  color: var(--charcoal);
+  cursor: pointer;
+  transition: all .18s;
+  user-select: none;
+  letter-spacing: .01em;
+}
+.pill:hover { border-color: var(--copper-lt); background: var(--copper-bg); }
+.pill.selected {
+  background: var(--copper);
+  border-color: var(--copper);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(139,94,60,.25);
+}
+.pill.multi.selected {
+  background: var(--copper-bg);
+  border-color: var(--copper);
+  color: var(--copper-dim);
+}
+
+/* ── SCALE SELECTOR (spice / activity) ── */
+.scale-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 2px;
+}
+.scale-btn {
+  flex: 1;
+  padding: 10px 6px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+  transition: all .18s;
+  text-align: center;
+  user-select: none;
+}
+.scale-btn .scale-icon { font-size: 18px; display: block; margin-bottom: 3px; }
+.scale-btn .scale-label { font-size: 10px; letter-spacing: .06em; color: var(--stone); text-transform: uppercase; font-weight: 500; }
+.scale-btn:hover { border-color: var(--copper-lt); background: var(--copper-bg); }
+.scale-btn.selected { border-color: var(--copper); background: var(--copper-bg); box-shadow: 0 2px 10px rgba(139,94,60,.15); }
+.scale-btn.selected .scale-label { color: var(--copper); }
+
+/* ── BODY STATS VISUAL ── */
+.stat-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 14px 12px;
+}
+.stat-card label {
+  display: block;
+  margin-bottom: 6px;
+}
+.stat-card .stat-val {
+  font-family: var(--ff-d);
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -.01em;
+}
+.stat-card .stat-unit {
+  font-size: 11px;
+  color: var(--stone);
+  margin-left: 4px;
+  font-family: var(--ff-s);
+  font-weight: 300;
+}
+
+/* ── GOAL CARDS ── */
+.goal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-top: 2px;
+}
+.goal-card {
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 12px;
+  cursor: pointer;
+  transition: all .2s;
+  text-align: center;
+  background: var(--surface);
+  user-select: none;
+}
+.goal-card:hover { border-color: var(--copper-lt); transform: translateY(-1px); }
+.goal-card.selected { border-color: var(--copper); background: var(--copper-bg); }
+.goal-card .goal-icon { font-size: 22px; margin-bottom: 6px; display: block; }
+.goal-card .goal-name { font-size: 12px; font-weight: 500; color: var(--charcoal); letter-spacing: .02em; }
+.goal-card .goal-desc { font-size: 10.5px; color: var(--stone); margin-top: 3px; font-weight: 300; }
+.goal-card.selected .goal-name { color: var(--copper-dim); }
+
+/* ── DELIVERY CARDS ── */
+.delivery-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 2px;
+}
+.delivery-card {
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 18px 16px;
+  cursor: pointer;
+  transition: all .2s;
+  background: var(--surface);
+  user-select: none;
+}
+.delivery-card:hover { border-color: var(--copper-lt); background: var(--copper-bg); }
+.delivery-card.selected { border-color: var(--copper); background: var(--copper-bg); box-shadow: 0 4px 16px rgba(139,94,60,.12); }
+.delivery-card .dc-icon { font-size: 26px; margin-bottom: 8px; }
+.delivery-card .dc-title { font-family: var(--ff-d); font-size: 18px; font-weight: 500; color: var(--ink); margin-bottom: 4px; }
+.delivery-card.selected .dc-title { color: var(--copper-dim); }
+.delivery-card .dc-desc { font-size: 12px; color: var(--stone); font-weight: 300; line-height: 1.55; }
+.delivery-card .dc-badge {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 3px 9px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .06em;
+  background: var(--parchment);
+  color: var(--stone);
+  text-transform: uppercase;
+}
+.delivery-card.selected .dc-badge { background: var(--copper); color: #fff; }
+
+/* ── CUISINE GRID ── */
+.cuisine-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 8px;
+  margin-top: 2px;
+}
+.cuisine-pill {
+  padding: 10px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+  transition: all .18s;
+  text-align: center;
+  user-select: none;
+}
+.cuisine-pill:hover { border-color: var(--copper-lt); background: var(--copper-bg); }
+.cuisine-pill.selected { border-color: var(--copper); background: var(--copper-bg); }
+.cuisine-pill .cuis-flag { font-size: 20px; display: block; margin-bottom: 4px; }
+.cuisine-pill .cuis-name { font-size: 11px; font-weight: 500; color: var(--charcoal); letter-spacing: .01em; }
+.cuisine-pill.selected .cuis-name { color: var(--copper-dim); }
+
+/* ── DIVIDER ── */
+.field-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 20px 0;
+  opacity: .6;
+}
+.field-section-label {
+  font-size: 10px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--copper);
+  font-weight: 500;
+  margin-bottom: 14px;
+  margin-top: 24px;
+}
+
+/* ── REVIEW STEP ── */
+.review-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.review-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+.review-card.full { grid-column: 1 / -1; }
+.review-card-title {
+  font-size: 9.5px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--copper);
+  font-weight: 500;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.review-edit-btn {
+  font-size: 10px;
+  color: var(--stone);
+  cursor: pointer;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  background: none;
+  border: none;
+  font-family: var(--ff-s);
+  font-weight: 400;
+  padding: 0;
+  transition: color .15s;
+}
+.review-edit-btn:hover { color: var(--copper); }
+.review-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--bg);
+  font-size: 13px;
+}
+.review-item:last-child { border-bottom: none; }
+.review-item-label { color: var(--stone); font-weight: 300; font-size: 12px; }
+.review-item-val { color: var(--ink); font-weight: 400; text-align: right; max-width: 200px; }
+.review-chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.review-chip {
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 10px;
+  background: var(--copper-bg);
+  color: var(--copper-dim);
+  border: 1px solid rgba(139,94,60,.2);
+}
+
+/* ── NAVIGATION ── */
+.form-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 36px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+.btn-back {
+  padding: 10px 22px;
+  border-radius: 6px;
+  border: 1.5px solid var(--border);
+  background: transparent;
+  color: var(--stone);
+  font-family: var(--ff-s);
+  font-size: 13px;
+  font-weight: 400;
+  cursor: pointer;
+  letter-spacing: .04em;
+  transition: all .18s;
+}
+.btn-back:hover { border-color: var(--copper); color: var(--ink); }
+.btn-back:disabled { opacity: .3; cursor: default; }
+.btn-next {
+  padding: 12px 32px;
+  border-radius: 6px;
+  border: none;
+  background: var(--copper);
+  color: #fff;
+  font-family: var(--ff-s);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  letter-spacing: .06em;
+  transition: all .2s;
+  box-shadow: 0 2px 12px rgba(139,94,60,.3);
+  text-transform: uppercase;
+}
+.btn-next:hover { background: var(--copper-dim); box-shadow: 0 4px 18px rgba(139,94,60,.4); transform: translateY(-1px); }
+.btn-submit {
+  background: var(--ink);
+  box-shadow: 0 2px 12px rgba(0,0,0,.2);
+}
+.btn-submit:hover { background: var(--charcoal); box-shadow: 0 4px 18px rgba(0,0,0,.3); }
+
+.step-counter {
+  font-size: 11px;
+  color: var(--stone);
+  letter-spacing: .08em;
+  font-weight: 400;
+}
+
+/* ── SUCCESS STATE ── */
+.success-screen {
+  display: none;
+  text-align: center;
+  padding: 60px 24px;
+  animation: fadeUp .6s ease both;
+}
+.success-screen.show { display: block; }
+.success-mark {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: var(--gr-bg);
+  border: 2px solid var(--gr);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 24px;
+  font-size: 26px;
+}
+.success-screen h2 {
+  font-family: var(--ff-d);
+  font-size: 36px;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+.success-screen h2 em { font-style: italic; color: var(--copper); }
+.success-screen p {
+  font-size: 14px;
+  color: var(--stone);
+  font-weight: 300;
+  max-width: 380px;
+  margin: 0 auto 28px;
+  line-height: 1.7;
+}
+.success-ref {
+  display: inline-block;
+  padding: 10px 20px;
+  background: var(--copper-bg);
+  border: 1px solid rgba(139,94,60,.2);
+  border-radius: 6px;
+  font-family: var(--ff-d);
+  font-size: 20px;
+  color: var(--copper);
+  letter-spacing: .08em;
+  margin-bottom: 24px;
+}
+.btn-new { 
+  padding: 10px 24px;
+  border-radius: 6px;
+  border: 1.5px solid var(--border);
+  background: transparent;
+  color: var(--stone);
+  font-family: var(--ff-s);
+  font-size: 13px;
+  cursor: pointer;
+  letter-spacing: .04em;
+  transition: all .18s;
+}
+.btn-new:hover { border-color: var(--copper); color: var(--copper); }
+
+/* ── VALIDATION ── */
+.field-error {
+  font-size: 11px;
+  color: var(--re);
+  letter-spacing: .03em;
+  display: none;
+}
+.field.invalid input,
+.field.invalid select,
+.field.invalid textarea {
+  border-color: var(--re);
+  box-shadow: 0 0 0 3px rgba(160,52,42,.1);
+}
+.field.invalid .field-error { display: block; }
+
+/* ── ALLERGY TAGS ── */
+.tag-input-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: 46px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 10px;
+  cursor: text;
+  transition: border .2s, box-shadow .2s;
+  align-items: flex-start;
+}
+.tag-input-wrap:focus-within {
+  border-color: var(--copper);
+  box-shadow: 0 0 0 3px var(--copper-glow);
+}
+.tag-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px 3px 10px;
+  border-radius: 12px;
+  background: var(--copper-bg);
+  border: 1px solid rgba(139,94,60,.2);
+  font-size: 12px;
+  color: var(--copper-dim);
+}
+.tag-remove {
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  color: var(--stone);
+  transition: color .15s;
+}
+.tag-remove:hover { color: var(--re); }
+.tag-real-input {
+  border: none; outline: none; background: transparent;
+  font-family: var(--ff-s); font-size: 14px; font-weight: 300;
+  color: var(--ink); min-width: 80px; flex: 1;
+  padding: 3px 4px;
+}
+.tag-real-input::placeholder { color: var(--sand); }
+
+/* ── BMI INDICATOR ── */
+.bmi-display {
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  display: none;
+  align-items: center;
+  gap: 12px;
+}
+.bmi-display.visible { display: flex; }
+.bmi-num { font-family: var(--ff-d); font-size: 24px; font-weight: 500; color: var(--ink); }
+.bmi-label { font-size: 11px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; }
+.bmi-bar-wrap { flex: 1; }
+.bmi-bar {
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(to right, #6BA3D6 0%, #5AAA7A 25%, #5AAA7A 50%, #C4895A 70%, #A0342A 100%);
+  position: relative;
+  margin-bottom: 4px;
+}
+.bmi-marker {
+  position: absolute;
+  top: -3px;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--ink);
+  border: 2px solid #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,.3);
+  transform: translateX(-50%);
+  transition: left .4s ease;
+}
+.bmi-scale { display: flex; justify-content: space-between; font-size: 9px; color: var(--stone); }
+
+@media (max-width: 600px) {
+  .field-row, .field-row.three { grid-template-columns: 1fr; }
+  .goal-grid { grid-template-columns: 1fr 1fr; }
+  .delivery-grid { grid-template-columns: 1fr; }
+  .review-grid { grid-template-columns: 1fr; }
+  .stat-cards { grid-template-columns: 1fr 1fr; }
+  .cuisine-grid { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); }
+  .page-wrap { padding: 32px 16px 60px; }
+}
+</style>
+</head>
+<body>
+
+<div class="page-wrap">
+
+  <!-- Header -->
+  <div class="form-header">
+    <span class="logo">Kō&thinsp;sh</span>
+    <h1>Tell us about<br><em>yourself</em></h1>
+    <p>A few details help us craft your meals with intention — every bite calibrated to you.</p>
+  </div>
+
+  <!-- Progress Rail -->
+  <div class="progress-rail" id="progress-rail">
+    <div class="prog-step active" id="prog-0" onclick="goToStep(0)">
+      <div class="prog-dot"><span>1</span></div>
+      <span class="prog-label">You</span>
+    </div>
+    <div class="prog-line" id="pline-0"></div>
+    <div class="prog-step" id="prog-1" onclick="goToStep(1)">
+      <div class="prog-dot"><span>2</span></div>
+      <span class="prog-label">Body</span>
+    </div>
+    <div class="prog-line" id="pline-1"></div>
+    <div class="prog-step" id="prog-2" onclick="goToStep(2)">
+      <div class="prog-dot"><span>3</span></div>
+      <span class="prog-label">Palate</span>
+    </div>
+    <div class="prog-line" id="pline-2"></div>
+    <div class="prog-step" id="prog-3" onclick="goToStep(3)">
+      <div class="prog-dot"><span>4</span></div>
+      <span class="prog-label">Delivery</span>
+    </div>
+    <div class="prog-line" id="pline-3"></div>
+    <div class="prog-step" id="prog-4" onclick="goToStep(4)">
+      <div class="prog-dot"><span>5</span></div>
+      <span class="prog-label">Review</span>
+    </div>
+  </div>
+
+  <!-- ═══ STEP 0: Personal ═══ -->
+  <div class="form-step active" id="step-0">
+    <h2 class="step-title">Personal <em>details</em></h2>
+    <p class="step-subtitle">The basics — who you are and how to reach you.</p>
+
+    <div class="field-row">
+      <div class="field" id="f-name">
+        <label>Full Name <span class="req">*</span></label>
+        <input type="text" id="name" placeholder="Your full name" oninput="clearError('f-name')">
+        <span class="field-error">Name is required</span>
+      </div>
+      <div class="field" id="f-phone">
+        <label>Phone Number <span class="req">*</span></label>
+        <input type="tel" id="phone" placeholder="+91 98765 43210" oninput="clearError('f-phone')">
+        <span class="field-error">Phone is required</span>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field" id="f-dob">
+        <label>Date of Birth <span class="req">*</span></label>
+        <input type="date" id="dob" onchange="calcAge(); clearError('f-dob')">
+        <span class="field-error">Date of birth is required</span>
+      </div>
+      <div class="field">
+        <label>Age</label>
+        <input type="number" id="age" placeholder="Auto-calculated" readonly style="background:var(--parchment);cursor:default">
+      </div>
+    </div>
+
+    <div class="field-row full">
+      <div class="field">
+        <label>Gender</label>
+        <div class="pill-group" id="gender-group">
+          <div class="pill" onclick="selectPill('gender-group',this,'gender')">Male</div>
+          <div class="pill" onclick="selectPill('gender-group',this,'gender')">Female</div>
+          <div class="pill" onclick="selectPill('gender-group',this,'gender')">Non-binary</div>
+          <div class="pill" onclick="selectPill('gender-group',this,'gender')">Prefer not to say</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-nav">
+      <button class="btn-back" disabled>← Back</button>
+      <span class="step-counter">Step 1 of 5</span>
+      <button class="btn-next" onclick="nextStep(0)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ═══ STEP 1: Body & Goals ═══ -->
+  <div class="form-step" id="step-1">
+    <h2 class="step-title">Body &amp; <em>Goals</em></h2>
+    <p class="step-subtitle">Help us understand where you are and where you want to go.</p>
+
+    <div class="stat-cards">
+      <div class="stat-card">
+        <label>Current Weight <span class="req">*</span></label>
+        <div class="input-unit">
+          <input type="number" id="weight" placeholder="70" min="30" max="250" oninput="updateBMI(); clearError('f-weight')">
+          <span class="unit">kg</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <label>Height <span class="req">*</span></label>
+        <div class="input-unit">
+          <input type="number" id="height" placeholder="170" min="100" max="250" oninput="updateBMI(); clearError('f-height')">
+          <span class="unit">cm</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <label>Target Weight</label>
+        <div class="input-unit">
+          <input type="number" id="target-weight" placeholder="65" min="30" max="250">
+          <span class="unit">kg</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- BMI Display -->
+    <div class="bmi-display" id="bmi-display">
+      <div>
+        <div class="bmi-num" id="bmi-num">—</div>
+        <div class="bmi-label" id="bmi-label" style="color:var(--stone)">BMI</div>
+      </div>
+      <div class="bmi-bar-wrap">
+        <div class="bmi-bar">
+          <div class="bmi-marker" id="bmi-marker" style="left:25%"></div>
+        </div>
+        <div class="bmi-scale">
+          <span>Underweight</span><span>Normal</span><span>Overweight</span><span>Obese</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="field-section-label">Primary Goal</div>
+    <div class="goal-grid" id="goal-grid">
+      <div class="goal-card" onclick="selectGoalCard(this,'goal')">
+        <span class="goal-icon">⬇️</span>
+        <div class="goal-name">Lose Weight</div>
+        <div class="goal-desc">Caloric deficit, lean protein focus</div>
+      </div>
+      <div class="goal-card" onclick="selectGoalCard(this,'goal')">
+        <span class="goal-icon">⬆️</span>
+        <div class="goal-name">Gain Weight</div>
+        <div class="goal-desc">Caloric surplus, nutrient-dense meals</div>
+      </div>
+      <div class="goal-card" onclick="selectGoalCard(this,'goal')">
+        <span class="goal-icon">⚖️</span>
+        <div class="goal-name">Maintain</div>
+        <div class="goal-desc">Balanced macros, sustained energy</div>
+      </div>
+      <div class="goal-card" onclick="selectGoalCard(this,'goal')">
+        <span class="goal-icon">💪</span>
+        <div class="goal-name">Build Muscle</div>
+        <div class="goal-desc">High protein, strength-oriented</div>
+      </div>
+      <div class="goal-card" onclick="selectGoalCard(this,'goal')">
+        <span class="goal-icon">🏃</span>
+        <div class="goal-name">Athletic Performance</div>
+        <div class="goal-desc">Carb timing, recovery nutrition</div>
+      </div>
+      <div class="goal-card" onclick="selectGoalCard(this,'goal')">
+        <span class="goal-icon">🌿</span>
+        <div class="goal-name">Gut Health</div>
+        <div class="goal-desc">Anti-inflammatory, whole foods</div>
+      </div>
+    </div>
+
+    <div class="field-section-label" style="margin-top:24px">Activity Level</div>
+    <div class="scale-wrap" id="activity-group">
+      <div class="scale-btn" onclick="selectScale('activity-group',this,'activity')">
+        <span class="scale-icon">🛋️</span>
+        <span class="scale-label">Sedentary</span>
+      </div>
+      <div class="scale-btn" onclick="selectScale('activity-group',this,'activity')">
+        <span class="scale-icon">🚶</span>
+        <span class="scale-label">Light</span>
+      </div>
+      <div class="scale-btn" onclick="selectScale('activity-group',this,'activity')">
+        <span class="scale-icon">🏃</span>
+        <span class="scale-label">Moderate</span>
+      </div>
+      <div class="scale-btn" onclick="selectScale('activity-group',this,'activity')">
+        <span class="scale-icon">🏋️</span>
+        <span class="scale-label">Active</span>
+      </div>
+      <div class="scale-btn" onclick="selectScale('activity-group',this,'activity')">
+        <span class="scale-icon">🔥</span>
+        <span class="scale-label">Athlete</span>
+      </div>
+    </div>
+
+    <div class="form-nav">
+      <button class="btn-back" onclick="prevStep(1)">← Back</button>
+      <span class="step-counter">Step 2 of 5</span>
+      <button class="btn-next" onclick="nextStep(1)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ═══ STEP 2: Palate ═══ -->
+  <div class="form-step" id="step-2">
+    <h2 class="step-title">Your <em>Palate</em></h2>
+    <p class="step-subtitle">Preferences, allergies, and the flavours that move you.</p>
+
+    <div class="field-row full">
+      <div class="field">
+        <label>Dietary Preference <span class="req">*</span></label>
+        <div class="pill-group" id="diet-group">
+          <div class="pill" onclick="selectPill('diet-group',this,'diet')">Omnivore</div>
+          <div class="pill" onclick="selectPill('diet-group',this,'diet')">Vegetarian</div>
+          <div class="pill" onclick="selectPill('diet-group',this,'diet')">Eggetarian</div>
+          <div class="pill" onclick="selectPill('diet-group',this,'diet')">Vegan</div>
+          <div class="pill" onclick="selectPill('diet-group',this,'diet')">Pescatarian</div>
+          <div class="pill" onclick="selectPill('diet-group',this,'diet')">Jain</div>
+          <div class="pill" onclick="selectPill('diet-group',this,'diet')">No Pork</div>
+          <div class="pill" onclick="selectPill('diet-group',this,'diet')">No Beef</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="field-section-label">Spice Tolerance</div>
+    <div class="scale-wrap" id="spice-group">
+      <div class="scale-btn" onclick="selectScale('spice-group',this,'spice')">
+        <span class="scale-icon">🫙</span>
+        <span class="scale-label">None</span>
+      </div>
+      <div class="scale-btn" onclick="selectScale('spice-group',this,'spice')">
+        <span class="scale-icon">🌿</span>
+        <span class="scale-label">Mild</span>
+      </div>
+      <div class="scale-btn" onclick="selectScale('spice-group',this,'spice')">
+        <span class="scale-icon">🌶</span>
+        <span class="scale-label">Medium</span>
+      </div>
+      <div class="scale-btn" onclick="selectScale('spice-group',this,'spice')">
+        <span class="scale-icon">🌶🌶</span>
+        <span class="scale-label">Hot</span>
+      </div>
+      <div class="scale-btn" onclick="selectScale('spice-group',this,'spice')">
+        <span class="scale-icon">🔥</span>
+        <span class="scale-label">Very Hot</span>
+      </div>
+    </div>
+
+    <div class="field-section-label">Allergies & Intolerances</div>
+    <div class="field full">
+      <label>Type and press Enter or comma to add</label>
+      <div class="tag-input-wrap" id="allergy-wrap" onclick="document.getElementById('allergy-input').focus()">
+        <input class="tag-real-input" id="allergy-input" placeholder="e.g. Gluten, Dairy, Shellfish…" onkeydown="handleTagInput(event,'allergy-wrap','allergies')">
+      </div>
+    </div>
+
+    <div class="field-section-label">Preferred Cuisines</div>
+    <div class="cuisine-grid" id="cuisine-group">
+      <div class="cuisine-pill" onclick="toggleMulti(this,'cuisines')"><span class="cuis-flag">🇮🇳</span><span class="cuis-name">Indian</span></div>
+      <div class="cuisine-pill" onclick="toggleMulti(this,'cuisines')"><span class="cuis-flag">🇯🇵</span><span class="cuis-name">Japanese</span></div>
+      <div class="cuisine-pill" onclick="toggleMulti(this,'cuisines')"><span class="cuis-flag">🇮🇹</span><span class="cuis-name">Italian</span></div>
+      <div class="cuisine-pill" onclick="toggleMulti(this,'cuisines')"><span class="cuis-flag">🇲🇽</span><span class="cuis-name">Mexican</span></div>
+      <div class="cuisine-pill" onclick="toggleMulti(this,'cuisines')"><span class="cuis-flag">🇹🇭</span><span class="cuis-name">Thai</span></div>
+      <div class="cuisine-pill" onclick="toggleMulti(this,'cuisines')"><span class="cuis-flag">🇱🇧</span><span class="cuis-name">Lebanese</span></div>
+      <div class="cuisine-pill" onclick="toggleMulti(this,'cuisines')"><span class="cuis-flag">🇨🇳</span><span class="cuis-name">Chinese</span></div>
+      <div class="cuisine-pill" onclick="toggleMulti(this,'cuisines')"><span class="cuis-flag">🇫🇷</span><span class="cuis-name">French</span></div>
+      <div class="cuisine-pill" onclick="toggleMulti(this,'cuisines')"><span class="cuis-flag">🌍</span><span class="cuis-name">Mediterranean</span></div>
+      <div class="cuisine-pill" onclick="toggleMulti(this,'cuisines')"><span class="cuis-flag">🇰🇷</span><span class="cuis-name">Korean</span></div>
+      <div class="cuisine-pill" onclick="toggleMulti(this,'cuisines')"><span class="cuis-flag">🇻🇳</span><span class="cuis-name">Vietnamese</span></div>
+      <div class="cuisine-pill" onclick="toggleMulti(this,'cuisines')"><span class="cuis-flag">🌎</span><span class="cuis-name">Continental</span></div>
+    </div>
+
+    <div class="field-divider"></div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Favourite Dish</label>
+        <input type="text" id="fav-dish" placeholder="e.g. Dal makhani, Ramen…">
+      </div>
+      <div class="field">
+        <label>Dislikes / Hard Avoids</label>
+        <input type="text" id="dislikes" placeholder="e.g. Bitter gourd, Liver…">
+      </div>
+    </div>
+
+    <div class="field-row full">
+      <div class="field">
+        <label>Any medical conditions relevant to diet?</label>
+        <input type="text" id="medical" placeholder="e.g. Diabetes Type 2, Hypertension, IBS…">
+      </div>
+    </div>
+
+    <div class="form-nav">
+      <button class="btn-back" onclick="prevStep(2)">← Back</button>
+      <span class="step-counter">Step 3 of 5</span>
+      <button class="btn-next" onclick="nextStep(2)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ═══ STEP 3: Delivery ═══ -->
+  <div class="form-step" id="step-3">
+    <h2 class="step-title">Delivery <em>Details</em></h2>
+    <p class="step-subtitle">Where and how you'd like your meals delivered.</p>
+
+    <div class="field-section-label">Delivery Plan</div>
+    <div class="delivery-grid" id="delivery-group">
+      <div class="delivery-card" onclick="selectDeliveryCard(this,'delivery-plan')">
+        <div class="dc-icon">🌅</div>
+        <div class="dc-title">Single Slot</div>
+        <div class="dc-desc">All four meals delivered together in the morning. One pickup, everything for the day.</div>
+        <span class="dc-badge">Morning Dispatch</span>
+      </div>
+      <div class="delivery-card" onclick="selectDeliveryCard(this,'delivery-plan')">
+        <div class="dc-icon">🔄</div>
+        <div class="dc-title">Multi Slot</div>
+        <div class="dc-desc">Fresh delivery for each meal window — breakfast, lunch, and dinner delivered separately.</div>
+        <span class="dc-badge">3× Daily</span>
+      </div>
+    </div>
+
+    <div class="field-section-label" style="margin-top:28px">Delivery Address</div>
+    <div class="field-row full">
+      <div class="field" id="f-address">
+        <label>Full Address <span class="req">*</span></label>
+        <textarea id="address" rows="3" placeholder="Flat / House no., Building, Street, Area, Bengaluru…" oninput="clearError('f-address')"></textarea>
+        <span class="field-error">Address is required</span>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Landmark</label>
+        <input type="text" id="landmark" placeholder="Near SBI ATM, opp. park…">
+      </div>
+      <div class="field">
+        <label>Delivery Instructions</label>
+        <input type="text" id="delivery-note" placeholder="Gate code, leave at door…">
+      </div>
+    </div>
+
+    <div class="field-divider"></div>
+
+    <div class="field-row full">
+      <div class="field">
+        <label>Additional Notes for the Chef</label>
+        <textarea id="notes" rows="3" placeholder="Anything else we should know — health goals, meal timing preferences, religious observances, travel plans…"></textarea>
+      </div>
+    </div>
+
+    <div class="form-nav">
+      <button class="btn-back" onclick="prevStep(3)">← Back</button>
+      <span class="step-counter">Step 4 of 5</span>
+      <button class="btn-next" onclick="nextStep(3)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ═══ STEP 4: Review ═══ -->
+  <div class="form-step" id="step-4">
+    <h2 class="step-title">Almost <em>ready</em></h2>
+    <p class="step-subtitle">Review your details before we begin crafting your plan.</p>
+
+    <div class="review-grid" id="review-content">
+      <!-- Generated by JS -->
+    </div>
+
+    <div class="form-nav">
+      <button class="btn-back" onclick="prevStep(4)">← Back</button>
+      <span class="step-counter">Step 5 of 5</span>
+      <button class="btn-next btn-submit" onclick="submitForm()">Submit Onboarding ✦</button>
+    </div>
+  </div>
+
+  <!-- ═══ SUCCESS ═══ -->
+  <div class="success-screen" id="success-screen">
+    <div class="success-mark">✦</div>
+    <h2>Welcome to <em>Kōsh</em></h2>
+    <p>Your profile is in our hands. We'll be in touch within 24 hours to begin building your personalised meal cycle.</p>
+    <div class="success-ref" id="success-ref">—</div>
+    <br>
+    <button class="btn-new" onclick="resetForm()">Submit another</button>
+  </div>
+
+</div><!-- /page-wrap -->
+
+<script>
+// ── STATE ──────────────────────────────────────────────────────────────────────
+const formData = {
+  name: '', phone: '', dob: '', age: '', gender: '',
+  weight: '', height: '', targetWeight: '', goal: '', activity: '',
+  diet: '', spice: '', allergies: [], cuisines: [], favDish: '', dislikes: '', medical: '',
+  deliveryPlan: '', address: '', landmark: '', deliveryNote: '', notes: ''
+};
+
+let currentStep = 0;
+const TOTAL_STEPS = 5;
+
+// ── NAVIGATION ─────────────────────────────────────────────────────────────────
+function nextStep(from) {
+  if (!validateStep(from)) return;
+  gatherStep(from);
+  goToStep(from + 1);
+}
+function prevStep(from) {
+  gatherStep(from);
+  goToStep(from - 1);
+}
+function goToStep(to) {
+  if (to < 0 || to >= TOTAL_STEPS) return;
+  // Animate out
+  const cur = document.getElementById('step-' + currentStep);
+  cur.classList.remove('active');
+  const next = document.getElementById('step-' + to);
+  next.classList.add('active');
+  currentStep = to;
+  updateProgress();
+  if (to === 4) buildReview();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── PROGRESS ───────────────────────────────────────────────────────────────────
+function updateProgress() {
+  for (let i = 0; i < TOTAL_STEPS; i++) {
+    const prog = document.getElementById('prog-' + i);
+    prog.classList.remove('active', 'done');
+    if (i < currentStep) prog.classList.add('done');
+    else if (i === currentStep) prog.classList.add('active');
+  }
+  for (let i = 0; i < TOTAL_STEPS - 1; i++) {
+    const line = document.getElementById('pline-' + i);
+    if (line) line.classList.toggle('done', i < currentStep);
+  }
+}
+
+// ── VALIDATION ─────────────────────────────────────────────────────────────────
+function validateStep(step) {
+  let valid = true;
+  if (step === 0) {
+    if (!document.getElementById('name').value.trim()) { showError('f-name'); valid = false; }
+    if (!document.getElementById('phone').value.trim()) { showError('f-phone'); valid = false; }
+    if (!document.getElementById('dob').value) { showError('f-dob'); valid = false; }
+  }
+  if (step === 1) {
+    if (!document.getElementById('weight').value) { showError('f-weight'); valid = false; }
+    if (!document.getElementById('height').value) { showError('f-height'); valid = false; }
+  }
+  if (step === 3) {
+    if (!document.getElementById('address').value.trim()) { showError('f-address'); valid = false; }
+  }
+  if (!valid) {
+    const firstErr = document.querySelector('.field.invalid input, .field.invalid textarea');
+    if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  return valid;
+}
+function showError(id) { document.getElementById(id) && document.getElementById(id).classList.add('invalid'); }
+function clearError(id) { document.getElementById(id) && document.getElementById(id).classList.remove('invalid'); }
+
+// ── GATHER DATA ────────────────────────────────────────────────────────────────
+function gatherStep(step) {
+  if (step === 0) {
+    formData.name = document.getElementById('name').value.trim();
+    formData.phone = document.getElementById('phone').value.trim();
+    formData.dob = document.getElementById('dob').value;
+    formData.age = document.getElementById('age').value;
+  }
+  if (step === 1) {
+    formData.weight = document.getElementById('weight').value;
+    formData.height = document.getElementById('height').value;
+    formData.targetWeight = document.getElementById('target-weight').value;
+  }
+  if (step === 2) {
+    formData.favDish = document.getElementById('fav-dish').value.trim();
+    formData.dislikes = document.getElementById('dislikes').value.trim();
+    formData.medical = document.getElementById('medical').value.trim();
+  }
+  if (step === 3) {
+    formData.address = document.getElementById('address').value.trim();
+    formData.landmark = document.getElementById('landmark').value.trim();
+    formData.deliveryNote = document.getElementById('delivery-note').value.trim();
+    formData.notes = document.getElementById('notes').value.trim();
+  }
+}
+
+// ── PILL SELECTOR (single select) ─────────────────────────────────────────────
+function selectPill(groupId, el, key) {
+  document.querySelectorAll('#' + groupId + ' .pill').forEach(p => p.classList.remove('selected'));
+  el.classList.add('selected');
+  formData[key] = el.textContent.trim();
+}
+
+// ── GOAL CARDS ────────────────────────────────────────────────────────────────
+function selectGoalCard(el, key) {
+  document.querySelectorAll('#goal-grid .goal-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  formData[key] = el.querySelector('.goal-name').textContent.trim();
+}
+
+// ── DELIVERY CARD ─────────────────────────────────────────────────────────────
+function selectDeliveryCard(el, key) {
+  document.querySelectorAll('#delivery-group .delivery-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  formData[key] = el.querySelector('.dc-title').textContent.trim();
+}
+
+// ── SCALE SELECTOR ────────────────────────────────────────────────────────────
+function selectScale(groupId, el, key) {
+  document.querySelectorAll('#' + groupId + ' .scale-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  formData[key] = el.querySelector('.scale-label').textContent.trim();
+}
+
+// ── MULTI TOGGLE (cuisines) ───────────────────────────────────────────────────
+function toggleMulti(el, key) {
+  el.classList.toggle('selected');
+  const val = el.querySelector('.cuis-name').textContent.trim();
+  if (el.classList.contains('selected')) {
+    if (!formData[key].includes(val)) formData[key].push(val);
+  } else {
+    formData[key] = formData[key].filter(v => v !== val);
+  }
+}
+
+// ── TAG INPUT (allergies) ─────────────────────────────────────────────────────
+function handleTagInput(e, wrapId, key) {
+  const input = e.target;
+  if (e.key === 'Enter' || e.key === ',') {
+    e.preventDefault();
+    const val = input.value.replace(',', '').trim();
+    if (val) addTag(wrapId, key, val);
+    input.value = '';
+  } else if (e.key === 'Backspace' && !input.value) {
+    const wrap = document.getElementById(wrapId);
+    const tags = wrap.querySelectorAll('.tag-item');
+    if (tags.length) {
+      const last = tags[tags.length - 1];
+      const removed = last.dataset.val;
+      formData[key] = formData[key].filter(v => v !== removed);
+      last.remove();
+    }
+  }
+}
+function addTag(wrapId, key, val) {
+  if (formData[key].includes(val)) return;
+  formData[key].push(val);
+  const wrap = document.getElementById(wrapId);
+  const tag = document.createElement('div');
+  tag.className = 'tag-item'; tag.dataset.val = val;
+  tag.innerHTML = `${val} <span class="tag-remove" onclick="removeTag('${wrapId}','${key}','${val}',this.parentElement)">×</span>`;
+  wrap.insertBefore(tag, wrap.querySelector('.tag-real-input'));
+}
+function removeTag(wrapId, key, val, el) {
+  formData[key] = formData[key].filter(v => v !== val);
+  el.remove();
+}
+
+// ── AGE CALCULATOR ────────────────────────────────────────────────────────────
+function calcAge() {
+  const dob = document.getElementById('dob').value;
+  if (!dob) return;
+  const today = new Date();
+  const birth = new Date(dob);
+  let age = today.getFullYear() - birth.getFullYear();
+  const m = today.getMonth() - birth.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+  document.getElementById('age').value = age > 0 ? age : '';
+}
+
+// ── BMI CALCULATOR ────────────────────────────────────────────────────────────
+function updateBMI() {
+  const w = parseFloat(document.getElementById('weight').value);
+  const h = parseFloat(document.getElementById('height').value) / 100;
+  const display = document.getElementById('bmi-display');
+  if (!w || !h || h <= 0) { display.classList.remove('visible'); return; }
+  const bmi = w / (h * h);
+  const bmiNum = document.getElementById('bmi-num');
+  const bmiLabel = document.getElementById('bmi-label');
+  const bmiMarker = document.getElementById('bmi-marker');
+  bmiNum.textContent = bmi.toFixed(1);
+  let label = 'Normal', color = 'var(--gr)', pct = 0;
+  if (bmi < 18.5) { label = 'Underweight'; color = '#6BA3D6'; pct = Math.max(2, (bmi / 18.5) * 20); }
+  else if (bmi < 25) { label = 'Normal'; color = 'var(--gr)'; pct = 20 + ((bmi - 18.5) / 6.5) * 30; }
+  else if (bmi < 30) { label = 'Overweight'; color = 'var(--copper-lt)'; pct = 50 + ((bmi - 25) / 5) * 20; }
+  else { label = 'Obese'; color = 'var(--re)'; pct = Math.min(96, 70 + ((bmi - 30) / 10) * 26); }
+  bmiLabel.textContent = label; bmiLabel.style.color = color;
+  bmiMarker.style.left = pct + '%';
+  display.classList.add('visible');
+}
+
+// ── REVIEW BUILDER ────────────────────────────────────────────────────────────
+function buildReview() {
+  gatherStep(3);
+  const c = document.getElementById('review-content');
+  const bmi = (() => {
+    const w = parseFloat(formData.weight), h = parseFloat(formData.height) / 100;
+    return (w && h) ? (w / (h*h)).toFixed(1) : '—';
+  })();
+
+  c.innerHTML = `
+    <div class="review-card">
+      <div class="review-card-title">Personal <button class="review-edit-btn" onclick="goToStep(0)">Edit</button></div>
+      <div class="review-item"><span class="review-item-label">Name</span><span class="review-item-val">${formData.name || '—'}</span></div>
+      <div class="review-item"><span class="review-item-label">Phone</span><span class="review-item-val">${formData.phone || '—'}</span></div>
+      <div class="review-item"><span class="review-item-label">Date of Birth</span><span class="review-item-val">${formData.dob || '—'}${formData.age ? ' · ' + formData.age + ' yrs' : ''}</span></div>
+      <div class="review-item"><span class="review-item-label">Gender</span><span class="review-item-val">${formData.gender || '—'}</span></div>
+    </div>
+    <div class="review-card">
+      <div class="review-card-title">Body & Goals <button class="review-edit-btn" onclick="goToStep(1)">Edit</button></div>
+      <div class="review-item"><span class="review-item-label">Weight</span><span class="review-item-val">${formData.weight ? formData.weight + ' kg' : '—'}</span></div>
+      <div class="review-item"><span class="review-item-label">Height</span><span class="review-item-val">${formData.height ? formData.height + ' cm' : '—'}</span></div>
+      <div class="review-item"><span class="review-item-label">Target Weight</span><span class="review-item-val">${formData.targetWeight ? formData.targetWeight + ' kg' : '—'}</span></div>
+      <div class="review-item"><span class="review-item-label">BMI</span><span class="review-item-val">${bmi}</span></div>
+      <div class="review-item"><span class="review-item-label">Goal</span><span class="review-item-val">${formData.goal || '—'}</span></div>
+      <div class="review-item"><span class="review-item-label">Activity</span><span class="review-item-val">${formData.activity || '—'}</span></div>
+    </div>
+    <div class="review-card full">
+      <div class="review-card-title">Palate <button class="review-edit-btn" onclick="goToStep(2)">Edit</button></div>
+      <div class="review-item"><span class="review-item-label">Diet</span><span class="review-item-val">${formData.diet || '—'}</span></div>
+      <div class="review-item"><span class="review-item-label">Spice</span><span class="review-item-val">${formData.spice || '—'}</span></div>
+      <div class="review-item"><span class="review-item-label">Favourite Dish</span><span class="review-item-val">${formData.favDish || '—'}</span></div>
+      <div class="review-item"><span class="review-item-label">Dislikes</span><span class="review-item-val">${formData.dislikes || '—'}</span></div>
+      ${formData.medical ? `<div class="review-item"><span class="review-item-label">Medical</span><span class="review-item-val">${formData.medical}</span></div>` : ''}
+      ${formData.allergies.length ? `<div style="margin-top:8px"><div class="review-item-label" style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--stone)">Allergies</div><div class="review-chips">${formData.allergies.map(a=>`<span class="review-chip">${a}</span>`).join('')}</div></div>` : ''}
+      ${formData.cuisines.length ? `<div style="margin-top:8px"><div class="review-item-label" style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--stone)">Cuisines</div><div class="review-chips">${formData.cuisines.map(c=>`<span class="review-chip">${c}</span>`).join('')}</div></div>` : ''}
+    </div>
+    <div class="review-card full">
+      <div class="review-card-title">Delivery <button class="review-edit-btn" onclick="goToStep(3)">Edit</button></div>
+      <div class="review-item"><span class="review-item-label">Plan</span><span class="review-item-val">${formData.deliveryPlan || '—'}</span></div>
+      <div class="review-item"><span class="review-item-label">Address</span><span class="review-item-val">${formData.address || '—'}</span></div>
+      ${formData.landmark ? `<div class="review-item"><span class="review-item-label">Landmark</span><span class="review-item-val">${formData.landmark}</span></div>` : ''}
+      ${formData.notes ? `<div class="review-item"><span class="review-item-label">Notes</span><span class="review-item-val">${formData.notes}</span></div>` : ''}
+    </div>
+  `;
+}
+
+// ── SUBMIT ─────────────────────────────────────────────────────────────────────
+function submitForm() {
+  gatherStep(4);
+  // Save to localStorage
+  const ref = 'KSH-' + Date.now().toString(36).toUpperCase().slice(-5);
+  const entry = { ...formData, ref, submittedAt: new Date().toISOString() };
+  try {
+    const existing = JSON.parse(localStorage.getItem('kosh-onboarding') || '[]');
+    existing.push(entry);
+    localStorage.setItem('kosh-onboarding', JSON.stringify(existing));
+  } catch(e) {}
+
+  // Hide steps, show success
+  document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+  document.getElementById('progress-rail').style.display = 'none';
+  document.getElementById('success-ref').textContent = ref;
+  document.getElementById('success-screen').classList.add('show');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  console.log('Kosh onboarding submission:', entry);
+}
+
+// ── RESET ──────────────────────────────────────────────────────────────────────
+function resetForm() {
+  document.getElementById('success-screen').classList.remove('show');
+  document.getElementById('progress-rail').style.display = '';
+  Object.keys(formData).forEach(k => formData[k] = Array.isArray(formData[k]) ? [] : '');
+  document.querySelectorAll('input[type=text], input[type=number], input[type=tel], input[type=date], textarea').forEach(el => el.value = '');
+  document.querySelectorAll('.pill.selected, .goal-card.selected, .delivery-card.selected, .scale-btn.selected, .cuisine-pill.selected').forEach(el => el.classList.remove('selected'));
+  document.querySelectorAll('.tag-item').forEach(el => el.remove());
+  document.getElementById('bmi-display').classList.remove('visible');
+  currentStep = 0;
+  updateProgress();
+  document.getElementById('step-0').classList.add('active');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,817 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Kōsh Onboarding API",
+    "description": "API documentation for the Kōsh onboarding subscription wizard, authentication gates, and admin control panels.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Local Development Server"
+    }
+  ],
+  "paths": {
+    "/health/live": {
+      "get": {
+        "summary": "Liveness Probe",
+        "description": "Checks if the process is running. Used by orchestrators to monitor container crashes.",
+        "responses": {
+          "200": {
+            "description": "Instance is live.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": { "status": "live" },
+                  "error": null,
+                  "meta": null,
+                  "requestId": "req-98af31bc2"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Instance is shutting down.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health/ready": {
+      "get": {
+        "summary": "Readiness Probe",
+        "description": "Checks if the database, Redis, and other dependencies are accessible. Fails fast without exposing internal secrets.",
+        "responses": {
+          "200": {
+            "description": "All dependencies are healthy.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": { "status": "ready" },
+                  "error": null,
+                  "meta": null,
+                  "requestId": "req-98af31bc2"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "A critical dependency is offline.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                },
+                "example": {
+                  "success": false,
+                  "data": null,
+                  "error": {
+                    "code": "DEPENDENCY_OFFLINE",
+                    "message": "A critical dependency is offline. Cannot serve traffic."
+                  },
+                  "meta": null,
+                  "requestId": "req-98af31bc2"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/health": {
+      "get": {
+        "summary": "API Server Health Check Gate",
+        "description": "Returns status healthy or shutting_down to coordinate load balancer target group connection draining.",
+        "responses": {
+          "200": {
+            "description": "Instance is healthy.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": { "status": "healthy" },
+                  "error": null,
+                  "meta": null,
+                  "requestId": "req-8b9a102bc"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Instance is shutting down.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                },
+                "example": {
+                  "success": false,
+                  "data": null,
+                  "error": {
+                    "code": "SHUTTING_DOWN",
+                    "message": "Server is undergoing a graceful shutdown."
+                  },
+                  "meta": null,
+                  "requestId": "req-8b9a102bc"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/onboarding": {
+      "post": {
+        "summary": "Submit Onboarding Application",
+        "description": "Submits user details, calculates BMI and age, and saves the record with a unique reference number. Status defaults to pending.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OnboardingInput"
+              },
+              "example": {
+                "name": "Jane Doe",
+                "phone": "+919876543210",
+                "email": "janedoe@example.com",
+                "dob": "1994-06-15",
+                "weight": 62.5,
+                "height": 168.0,
+                "targetWeight": 58.0,
+                "diet": "veg",
+                "spice": "medium",
+                "allergies": ["peanuts"],
+                "cuisines": ["indian", "italian"],
+                "address": "402, Sea Breeze, Bandra West, Mumbai, MH, 400050"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Application recorded successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "ref": "KSH-H8K3A",
+                    "message": "Onboarding submission recorded successfully."
+                  },
+                  "error": null,
+                  "meta": null,
+                  "requestId": "req-98af31bc2"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                },
+                "example": {
+                  "success": false,
+                  "data": null,
+                  "error": {
+                    "code": "VALIDATION_ERROR",
+                    "message": "Validation failed",
+                    "details": {
+                      "email": ["Invalid email address"]
+                    }
+                  },
+                  "meta": null,
+                  "requestId": "req-98af31bc2"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access (Not applicable to this route).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden access.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server/database configuration failure.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                },
+                "example": {
+                  "success": false,
+                  "data": null,
+                  "error": {
+                    "code": "DATABASE_ERROR",
+                    "message": "Database connection not configured. Please set DATABASE_URL."
+                  },
+                  "meta": null,
+                  "requestId": "req-98af31bc2"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/login": {
+      "post": {
+        "summary": "Admin Portal Authentication Gate",
+        "description": "Compares submitted secret key against the environment variable ADMIN_SECRET, generating and setting an HTTP-Only signed cookie on success.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["secret"],
+                "properties": {
+                  "secret": {
+                    "type": "string",
+                    "description": "Admin access password"
+                  }
+                }
+              },
+              "example": {
+                "secret": "kosh1602@"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Access granted, HTTP-Only cookie set.",
+            "headers": {
+              "Set-Cookie": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Cookie kosh_admin_token issued"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "message": "Authenticated successfully."
+                  },
+                  "error": null,
+                  "meta": null,
+                  "requestId": "req-4a81bc20b"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials secret.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                },
+                "example": {
+                  "success": false,
+                  "data": null,
+                  "error": {
+                    "code": "UNAUTHORIZED",
+                    "message": "Invalid authentication secret."
+                  },
+                  "meta": null,
+                  "requestId": "req-4a81bc20b"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server configuration failure.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/logout": {
+      "post": {
+        "summary": "Admin Portal Logout",
+        "description": "Invalidates the admin session by clearing the kosh_admin_token HTTP-Only cookie.",
+        "responses": {
+          "200": {
+            "description": "Logged out successfully, cookie cleared.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "message": "Logged out successfully."
+                  },
+                  "error": null,
+                  "meta": null,
+                  "requestId": "req-3b8c19d2e"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/submissions": {
+      "get": {
+        "summary": "Fetch Onboarding Applications List",
+        "description": "Retrieves the list of onboarding applications from the database, calculating dynamic age using PostgreSQL's age function. Auth cookie required.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Applications list returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": [
+                    {
+                      "id": "b3f02e60-482a-4309-8472-ee1d82f7c001",
+                      "ref": "KSH-H8K3A",
+                      "name": "Jane Doe",
+                      "phone": "+919876543210",
+                      "email": "janedoe@example.com",
+                      "dob": "1994-06-15",
+                      "age": 32,
+                      "diet": "veg",
+                      "status": "pending",
+                      "submittedAt": "2026-07-07T11:04:12.385Z"
+                    }
+                  ],
+                  "error": null,
+                  "meta": {
+                    "total": 1
+                  },
+                  "requestId": "req-7b2a92e10"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access cookie missing/invalid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                },
+                "example": {
+                  "success": false,
+                  "data": null,
+                  "error": {
+                    "code": "UNAUTHORIZED",
+                    "message": "Unauthorized access. Please log in."
+                  },
+                  "meta": null,
+                  "requestId": "req-7b2a92e10"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Database connection or configuration error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update Application Status",
+        "description": "Alters the confirmation status of a submission between 'pending' and 'confirmed'. If confirmed, triggers a welcome confirmation email.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["id", "status"],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "Submission record UUID"
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": ["pending", "confirmed"],
+                    "description": "New application status"
+                  }
+                }
+              },
+              "example": {
+                "id": "b3f02e60-482a-4309-8472-ee1d82f7c001",
+                "status": "confirmed"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Application status updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "message": "Status updated to confirmed successfully."
+                  },
+                  "error": null,
+                  "meta": null,
+                  "requestId": "req-9c8f2a1b0"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                },
+                "example": {
+                  "success": false,
+                  "data": null,
+                  "error": {
+                    "code": "VALIDATION_ERROR",
+                    "message": "Validation failed",
+                    "details": {
+                      "id": ["Invalid submission ID format"]
+                    }
+                  },
+                  "meta": null,
+                  "requestId": "req-9c8f2a1b0"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Submission record not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                },
+                "example": {
+                  "success": false,
+                  "data": null,
+                  "error": {
+                    "code": "NOT_FOUND",
+                    "message": "Submission not found."
+                  },
+                  "meta": null,
+                  "requestId": "req-9c8f2a1b0"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Database update failure.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "cookieAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "kosh_admin_token",
+        "description": "HTTP-Only secure cookie signed with the server key."
+      }
+    },
+    "schemas": {
+      "OnboardingInput": {
+        "type": "object",
+        "required": ["name", "phone", "email", "dob", "weight", "height", "diet", "address"],
+        "properties": {
+          "name": { "type": "string", "minLength": 2, "maxLength": 150 },
+          "phone": { "type": "string", "pattern": "^\\+[1-9]\\d{7,14}$" },
+          "email": { "type": "string", "format": "email", "minLength": 5, "maxLength": 255 },
+          "dob": { "type": "string", "format": "date" },
+          "gender": { "type": "string" },
+          "weight": { "type": "number", "minimum": 20, "maximum": 500 },
+          "height": { "type": "number", "minimum": 50, "maximum": 300 },
+          "targetWeight": { "type": "number", "minimum": 20, "maximum": 500 },
+          "goal": { "type": "string" },
+          "activity": { "type": "string" },
+          "diet": { "type": "string" },
+          "spice": { "type": "string" },
+          "allergies": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1, "maxLength": 100 },
+            "maxItems": 50
+          },
+          "cuisines": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1, "maxLength": 100 },
+            "maxItems": 50
+          },
+          "favDish": { "type": "string" },
+          "dislikes": { "type": "string" },
+          "medical": { "type": "string" },
+          "deliveryPlan": { "type": "string" },
+          "address": { "type": "string", "minLength": 10, "maxLength": 1000 },
+          "landmark": { "type": "string" },
+          "deliveryNote": { "type": "string" },
+          "notes": { "type": "string" }
+        }
+      },
+      "ApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean" },
+          "data": { "type": "object", "nullable": true },
+          "error": {
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "code": { "type": "string" },
+              "message": { "type": "string" },
+              "details": { "type": "object", "nullable": true }
+            }
+          },
+          "meta": {
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "page": { "type": "integer" },
+              "limit": { "type": "integer" },
+              "total": { "type": "integer" }
+            }
+          },
+          "requestId": { "type": "string" }
+        }
+      }
+    }
+  }
+}

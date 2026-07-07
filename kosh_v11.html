@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kōsh — Private Kitchen · Sadashivanagar, Bengaluru</title>
+<meta name="description" content="Precision-built meals for 40 members. Delivered in your personalised vessel, every morning. No plastic. No repetition. Bengaluru.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Instrument+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+img,svg{display:block;max-width:100%;}
+button,input,textarea,select{font:inherit;border-radius:0;}
+
+:root{
+  --ink:#16140F;
+  --char:#2E2B23;
+  --stone:#857568;
+  --sand:#C8B99A;
+  --cream:#F0EBE0;
+  --parch:#F7F4EE;
+  --copper:#8B5A2B;
+  --copper-l:#C4844A;
+  --moss:#3D4A35;
+  --moss-deep:#2C3828;
+  --forest:#1E2D1A;
+  --terracotta:#5C3520;
+  --warm-dark:#2A1F16;
+  --gold:#C9A96E;
+  --ff:'Cormorant Garamond',Georgia,serif;
+  --fs:'Instrument Sans',system-ui,sans-serif;
+  --max:1260px;
+  --sp:130px;
+}
+
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+body{background:var(--parch);color:var(--ink);font-family:var(--fs);font-size:16px;line-height:1.7;overflow-x:hidden;cursor:none;}
+a{color:inherit;text-decoration:none;}
+::selection{background:var(--sand);color:var(--ink);}
+
+/* ── CURSOR ── */
+#cursor{position:fixed;width:10px;height:10px;border-radius:50%;background:var(--copper);pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .12s,width .2s,height .2s,opacity .2s;mix-blend-mode:multiply;}
+#cursor.big{width:44px;height:44px;opacity:.35;}
+body:hover #cursor{opacity:1;}
+
+/* ── GRAIN ── */
+.grain{position:fixed;inset:0;z-index:9990;pointer-events:none;opacity:.025;}
+.grain::before{content:'';position:absolute;inset:-50%;width:200%;height:200%;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:180px;animation:grain 8s steps(10) infinite;}
+@keyframes grain{0%{transform:translate(0,0);}10%{transform:translate(-5%,-10%);}20%{transform:translate(-15%,5%);}30%{transform:translate(7%,-25%);}40%{transform:translate(-5%,25%);}50%{transform:translate(-15%,10%);}60%{transform:translate(15%,0%);}70%{transform:translate(0%,15%);}80%{transform:translate(3%,35%);}90%{transform:translate(-10%,10%);}100%{transform:translate(9%,0%);}}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:32px 72px;transition:all .4s cubic-bezier(.16,1,.3,1);}
+nav.scrolled{background:rgba(247,244,238,.96);backdrop-filter:blur(20px);padding:20px 72px;box-shadow:0 1px 0 rgba(200,185,154,.3);}
+.logo{font-family:var(--ff);font-size:22px;font-weight:300;letter-spacing:.1em;color:var(--ink);line-height:1;}
+.logo em{font-style:italic;color:var(--copper);}
+.nav-r{display:flex;align-items:center;gap:40px;}
+.nav-links{display:flex;gap:32px;list-style:none;}
+.nav-links a{font-family:var(--fs);font-size:12px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--stone);transition:color .2s;}
+.nav-links a:hover{color:var(--ink);}
+.nav-apply{background:var(--ink)!important;color:var(--parch)!important;padding:11px 26px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;font-size:11px!important;transition:background .25s!important;}
+.nav-apply:hover{background:var(--copper)!important;}
+.nav-toggle{display:none;width:30px;height:22px;flex-direction:column;justify-content:space-between;cursor:none;}
+.nav-toggle span{display:block;height:1px;background:var(--ink);transform-origin:left;transition:transform .3s,opacity .3s;}
+.mob-menu{display:none;position:fixed;inset:0;z-index:190;background:var(--forest);align-items:center;justify-content:center;flex-direction:column;gap:32px;}
+.mob-menu.open{display:flex;}
+.mob-menu a{font-family:var(--ff);font-size:clamp(32px,7vw,56px);font-weight:300;color:var(--parch);letter-spacing:.04em;transition:color .2s;}
+.mob-menu a:hover{color:var(--gold);}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:grid;grid-template-columns:55% 45%;overflow:hidden;}
+.hero-l{display:flex;flex-direction:column;justify-content:flex-end;padding:100px 64px 80px 72px;position:relative;}
+/* Textured parchment background */
+.hero-l::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 20% 80%,rgba(139,90,43,.07) 0%,transparent 60%),radial-gradient(ellipse 60% 40% at 80% 20%,rgba(200,185,154,.12) 0%,transparent 50%);pointer-events:none;}
+.h-eyebrow{display:flex;align-items:center;gap:16px;margin-bottom:44px;}
+.h-eyebrow-line{width:36px;height:1px;background:var(--sand);}
+.h-eyebrow-txt{font-size:10px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--stone);}
+.hero-h1{font-family:var(--ff);font-size:clamp(52px,6.5vw,96px);font-weight:300;line-height:.95;letter-spacing:-.01em;color:var(--ink);margin-bottom:40px;}
+.hero-h1 em{display:block;font-style:italic;color:var(--copper);}
+.hero-h1 .outline{-webkit-text-stroke:1px var(--ink);color:transparent;}
+.hero-sub{font-size:15px;line-height:1.8;color:var(--char);max-width:440px;margin-bottom:56px;font-weight:400;}
+.hero-ctas{display:flex;align-items:center;gap:24px;}
+.btn-fill{display:inline-flex;align-items:center;gap:12px;background:var(--ink);color:var(--parch);font-family:var(--fs);font-size:11px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;padding:17px 38px;border:none;cursor:none;transition:background .25s;}
+.btn-fill:hover{background:var(--copper);}
+.btn-fill .arr{transition:transform .25s;}
+.btn-fill:hover .arr{transform:translateX(4px);}
+.btn-ghost{display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--stone);font-family:var(--fs);font-size:11px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;border:none;cursor:none;transition:color .2s;}
+.btn-ghost:hover{color:var(--ink);}
+/* Hero numbers */
+.hero-numbers{display:flex;gap:48px;margin-top:64px;padding-top:40px;border-top:1px solid var(--sand);}
+.hn-item{display:flex;flex-direction:column;}
+.hn-val{font-family:var(--ff);font-size:36px;font-weight:300;color:var(--ink);line-height:1;}
+.hn-lbl{font-size:10px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--stone);margin-top:4px;}
+
+/* Hero right — rich dark panel */
+.hero-r{position:relative;background:var(--ink);overflow:hidden;}
+.hero-r-media{position:absolute;inset:0;}
+.hero-r-media img{width:100%;height:100%;object-fit:cover;opacity:.35;mix-blend-mode:luminosity;}
+.hero-r-overlay{position:absolute;inset:0;background:linear-gradient(160deg,rgba(22,20,15,.7) 0%,rgba(139,90,43,.15) 100%);}
+/* Organic ring accent */
+.hero-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:340px;height:340px;border:1px solid rgba(201,169,110,.12);border-radius:50%;animation:pulse-ring 6s ease-in-out infinite;}
+.hero-ring-2{width:240px;height:240px;border-color:rgba(201,169,110,.08);animation-delay:2s;}
+.hero-ring-3{width:160px;height:160px;border-color:rgba(201,169,110,.06);animation-delay:4s;}
+@keyframes pulse-ring{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.8;}50%{transform:translate(-50%,-50%) scale(1.04);opacity:1;}}
+/* Vessel composition */
+.vessel-comp{position:absolute;top:50%;left:50%;transform:translate(-50%,-52%);z-index:2;display:flex;flex-direction:column;align-items:center;}
+.vc-handle{width:60px;height:10px;background:linear-gradient(90deg,transparent,rgba(180,194,200,.6),transparent);border-radius:50%;margin-bottom:2px;}
+.vc-lid{width:200px;height:24px;background:linear-gradient(180deg,#a8b4bc 0%,#7c8c94 50%,#5c6c74 100%);border-radius:4px 4px 0 0;position:relative;}
+.vc-lid::before{content:'';position:absolute;inset:0 0 50% 0;background:rgba(255,255,255,.12);border-radius:4px 4px 0 0;}
+.vc-lid::after{content:'k · ō · s · h';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--ff);font-size:8px;letter-spacing:.5em;color:rgba(240,235,224,.3);}
+.vc-body{width:200px;height:200px;background:linear-gradient(175deg,#8c9898 0%,#607070 40%,#3a4848 100%);border-radius:0 0 6px 6px;box-shadow:0 40px 100px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.06);position:relative;overflow:hidden;}
+.vc-body::before{content:'';position:absolute;left:0;right:0;top:0;height:3px;background:rgba(255,255,255,.06);}
+.vc-body::after{content:'';position:absolute;bottom:32px;left:50%;transform:translateX(-50%);width:80px;height:1px;background:rgba(255,255,255,.07);}
+.vc-name{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);font-family:var(--ff);font-style:italic;font-size:12px;color:rgba(240,235,224,.22);letter-spacing:.08em;white-space:nowrap;}
+.vc-copper{position:absolute;bottom:-10px;right:calc(50% - 180px);z-index:3;transform:rotate(9deg);filter:drop-shadow(0 14px 40px rgba(0,0,0,.3));}
+.vcc-lid{width:90px;height:14px;background:linear-gradient(180deg,#c8784a,#8a4018);border-radius:3px 3px 0 0;}
+.vcc-body{width:90px;height:80px;background:linear-gradient(180deg,#b06030,#6a3010);border-radius:0 0 4px 4px;}
+/* Floating data cards */
+.hero-card{position:absolute;z-index:4;background:rgba(247,244,238,.9);backdrop-filter:blur(12px);padding:12px 18px;border-radius:2px;}
+.hc-1{top:20%;left:7%;animation:float1 9s ease-in-out infinite;}
+.hc-2{bottom:25%;right:6%;animation:float2 7s ease-in-out infinite 1.5s;}
+.hc-label{font-size:9px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--stone);margin-bottom:4px;}
+.hc-val{font-family:var(--ff);font-size:20px;font-weight:400;color:var(--ink);line-height:1;}
+.hc-sub{font-size:10px;color:var(--stone);margin-top:2px;}
+@keyframes float1{0%,100%{transform:translateY(0) rotate(-1deg);}50%{transform:translateY(-10px) rotate(-1deg);}}
+@keyframes float2{0%,100%{transform:translateY(0) rotate(.5deg);}50%{transform:translateY(-8px) rotate(.5deg);}}
+
+/* ── MARQUEE ── */
+.marquee-strip{background:var(--moss-deep);padding:18px 0;overflow:hidden;position:relative;}
+.marquee-inner{display:flex;width:max-content;animation:marquee 28s linear infinite;}
+.marquee-item{display:flex;align-items:center;gap:32px;padding:0 32px;white-space:nowrap;}
+.mi-dot{width:5px;height:5px;border-radius:50%;background:var(--copper);flex-shrink:0;}
+.mi-txt{font-family:var(--ff);font-style:italic;font-size:clamp(18px,2vw,26px);color:var(--parch);font-weight:300;letter-spacing:.03em;}
+@keyframes marquee{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+
+/* ── SECTIONS ── */
+section{position:relative;}
+.sec-pad{padding:var(--sp) 72px;}
+.sec-inner{max-width:var(--max);margin:0 auto;}
+
+/* ── EYEBROW ── */
+.eyebrow{font-size:10px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--stone);margin-bottom:28px;display:flex;align-items:center;gap:14px;}
+.eyebrow::after{content:'';flex:0 0 24px;height:1px;background:var(--sand);}
+.eyebrow.light{color:rgba(247,244,238,.3);}
+.eyebrow.light::after{background:rgba(247,244,238,.15);}
+
+/* ── HEADINGS ── */
+.h2{font-family:var(--ff);font-size:clamp(36px,4.5vw,58px);font-weight:300;line-height:1.05;letter-spacing:-.005em;color:var(--ink);}
+.h2 em{font-style:italic;color:var(--copper);}
+.h2.light{color:var(--parch);}
+.body-lg{font-size:17px;line-height:1.8;color:var(--char);}
+.body-md{font-size:15px;line-height:1.75;color:var(--stone);}
+
+/* ── REVEAL ── */
+.rev{opacity:0;transform:translateY(32px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1);}
+.rev.in{opacity:1;transform:translateY(0);}
+.rev.d1{transition-delay:.1s;}
+.rev.d2{transition-delay:.2s;}
+.rev.d3{transition-delay:.3s;}
+.rev.d4{transition-delay:.4s;}
+
+/* ── VESSEL SECTION ── */
+.vessel-section{background:var(--parch);border-top:1px solid var(--sand);}
+.vessel-grid{display:grid;grid-template-columns:1fr 1fr;gap:120px;align-items:center;}
+.vessel-steps{margin-top:52px;border-top:1px solid var(--sand);}
+.vstep{display:grid;grid-template-columns:28px 1fr;gap:20px;padding:22px 0;border-bottom:1px solid var(--sand);}
+.vstep:last-child{border-bottom:none;}
+.vs-num{font-family:var(--ff);font-style:italic;font-size:12px;color:var(--sand);padding-top:3px;}
+.vs-content h4{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:5px;letter-spacing:.01em;}
+.vs-content p{font-size:13px;color:var(--stone);line-height:1.65;}
+/* Vessel illustration */
+.vessel-art{position:relative;min-height:560px;display:flex;align-items:center;justify-content:center;}
+.va-bg{position:absolute;inset:0;border-radius:2px;overflow:hidden;}
+.va-bg::before{content:'';position:absolute;inset:0;background:linear-gradient(145deg,#e8e0d0 0%,#d4c8b0 100%);}
+.va-bg::after{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23c8b99a' fill-opacity='0.08'%3E%3Ccircle cx='20' cy='20' r='.5'/%3E%3C/g%3E%3C/svg%3E");}
+.va-inner{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;}
+.va-steel-lid{width:180px;height:20px;background:linear-gradient(180deg,#a0aab0 0%,#788290 50%,#586070 100%);border-radius:4px 4px 0 0;position:relative;}
+.va-steel-lid::before{content:'';position:absolute;inset:0 0 50% 0;background:rgba(255,255,255,.14);border-radius:4px 4px 0 0;}
+.va-steel-body{width:180px;height:180px;background:linear-gradient(175deg,#848e8e 0%,#5e6868 40%,#3e4848 100%);border-radius:0 0 5px 5px;box-shadow:0 24px 80px rgba(22,20,15,.3);position:relative;}
+.va-steel-body::after{content:'';position:absolute;bottom:28px;left:50%;transform:translateX(-50%);font-family:var(--ff);font-style:italic;font-size:12px;color:rgba(247,244,238,.2);letter-spacing:.06em;white-space:nowrap;}
+.va-nameplate{position:absolute;bottom:20px;width:100%;text-align:center;}
+.va-nameplate span{font-family:var(--ff);font-style:italic;font-size:12px;color:rgba(247,244,238,.2);letter-spacing:.06em;}
+/* Rotated copper vessel */
+.va-copper{position:absolute;bottom:60px;right:40px;transform:rotate(12deg);filter:drop-shadow(0 12px 30px rgba(22,20,15,.25));}
+.vac-lid{width:80px;height:13px;background:linear-gradient(180deg,#c47844,#8a4020);border-radius:3px 3px 0 0;}
+.vac-body{width:80px;height:72px;background:linear-gradient(180deg,#aa5e30,#6a3010);border-radius:0 0 4px 4px;}
+/* Note card */
+.va-note{position:absolute;top:40px;left:36px;background:#f5f1e8;width:120px;padding:14px;box-shadow:0 4px 20px rgba(22,20,15,.1);transform:rotate(-4deg);}
+.va-note p{font-family:var(--ff);font-style:italic;font-size:10px;color:var(--char);line-height:1.6;}
+.va-note span{display:block;margin-top:8px;font-family:var(--fs);font-size:8px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--stone);}
+
+/* ── PROMISE ── */
+.promise-sec{padding:140px 72px;text-align:center;border-top:1px solid var(--sand);border-bottom:1px solid var(--sand);background:var(--parch);position:relative;overflow:hidden;}
+.promise-sec::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:700px;background:radial-gradient(circle,rgba(139,90,43,.06) 0%,transparent 70%);pointer-events:none;}
+.promise-inner{max-width:800px;margin:0 auto;position:relative;}
+.promise-quote{font-family:var(--ff);font-size:clamp(26px,3.8vw,50px);font-weight:300;line-height:1.35;color:var(--ink);letter-spacing:.005em;}
+.promise-quote em{font-style:italic;color:var(--copper);}
+.promise-attr{margin-top:36px;font-size:11px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--stone);}
+
+/* ── CYCLE ── */
+.cycle-sec{background:var(--forest);position:relative;overflow:hidden;}
+.cycle-sec::after{content:'28';position:absolute;right:-60px;bottom:-80px;font-family:var(--ff);font-size:min(40vw,500px);font-weight:300;color:rgba(247,244,238,.025);line-height:.9;pointer-events:none;}
+.cycle-head{display:grid;grid-template-columns:1fr 1fr;gap:80px;margin-bottom:72px;align-items:end;}
+.cycle-grid{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid rgba(247,244,238,.06);}
+.cday{padding:28px 0;border-bottom:1px solid rgba(247,244,238,.05);display:grid;grid-template-columns:64px 1fr;gap:16px;align-items:start;}
+.cday:nth-child(odd){padding-right:48px;border-right:1px solid rgba(247,244,238,.05);}
+.cday:nth-child(even){padding-left:48px;}
+.cday-n{font-family:var(--ff);font-style:italic;font-size:12px;color:rgba(247,244,238,.15);padding-top:3px;}
+.cday-meal{font-family:var(--ff);font-size:18px;font-weight:300;color:var(--parch);line-height:1.2;margin-bottom:4px;}
+.cday-note{font-size:11px;color:rgba(247,244,238,.25);line-height:1.55;}
+.cycle-fn{margin-top:52px;font-family:var(--ff);font-style:italic;font-size:18px;color:rgba(247,244,238,.2);text-align:center;}
+
+/* ── MEALS TIMELINE ── */
+.meals-sec{background:var(--parch);border-top:1px solid var(--sand);}
+.meals-head{display:grid;grid-template-columns:1fr 1fr;gap:80px;margin-bottom:72px;align-items:end;}
+.meal-track{display:flex;border:1px solid var(--sand);overflow:hidden;}
+.meal-item{flex:1;padding:36px 24px;border-right:1px solid var(--sand);transition:background .3s;cursor:none;position:relative;}
+.meal-item:last-child{border-right:none;}
+.meal-item:hover{background:rgba(139,90,43,.04);}
+.meal-num{font-family:var(--ff);font-size:52px;font-weight:300;color:rgba(200,185,154,.4);line-height:1;margin-bottom:20px;}
+.meal-time{font-size:9px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--copper);margin-bottom:12px;}
+.meal-name{font-family:var(--ff);font-size:20px;font-weight:300;color:var(--ink);line-height:1.2;margin-bottom:10px;}
+.meal-desc{font-size:12px;color:var(--stone);line-height:1.65;}
+.meal-item:last-child{background:rgba(139,90,43,.025);}
+
+/* ── COMPARISON ── */
+.compare-sec{background:var(--parch);padding:var(--sp) 72px;border-top:1px solid var(--sand);}
+.ctbl-wrap{overflow-x:auto;margin-top:52px;}
+.ctbl{width:100%;border-collapse:collapse;}
+.ctbl th{font-family:var(--fs);font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--stone);padding:0 20px 18px;text-align:left;border-bottom:1px solid var(--sand);}
+.ctbl td{padding:18px 20px;font-size:13.5px;color:var(--stone);border-bottom:1px solid #e8e0d0;vertical-align:middle;}
+.ctbl tr.kosh td{color:var(--ink);background:rgba(139,90,43,.03);}
+.ctbl tr.kosh td:first-child{border-left:2px solid var(--copper);padding-left:18px;}
+.chk{color:var(--copper);}.crs{color:var(--sand);}
+.tt{display:inline-block;font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;}
+.tt-u{background:var(--copper);color:var(--parch);}
+.tt-m{background:#ede7d8;color:var(--stone);}
+.tt-n{background:rgba(139,90,43,.1);color:var(--copper);}
+.tt-p{background:rgba(22,20,15,.07);color:var(--char);}
+.pf{font-family:var(--ff);font-size:18px;font-weight:300;}
+.bnh{color:var(--copper);}
+.c-pullquote{margin-top:48px;padding:28px 36px;border-left:2px solid var(--copper);}
+.c-pullquote p{font-family:var(--ff);font-style:italic;font-size:20px;color:var(--char);line-height:1.6;}
+
+/* ── PLANS ── */
+.plans-sec{background:var(--parch);border-top:1px solid var(--sand);}
+.plans-head{display:grid;grid-template-columns:1fr 1fr;gap:80px;margin-bottom:72px;align-items:end;}
+.plans-grid{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--sand);}
+@media(max-width:1100px){.plans-grid{grid-template-columns:1fr 1fr;}}
+.plan-card{padding:44px 32px;border-right:1px solid var(--sand);position:relative;overflow:hidden;}
+.plan-card:last-child{border-right:none;}
+.plan-card.featured{background:var(--terracotta);}
+.plan-tag{display:inline-block;font-size:9px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;padding:5px 13px;margin-bottom:32px;}
+.pt-std{background:var(--sand);color:var(--char);}
+.pt-feat{background:var(--copper);color:var(--parch);}
+.pt-prem{background:rgba(139,90,43,.12);color:var(--copper);border:1px solid rgba(139,90,43,.3);}
+.plan-name{font-family:var(--ff);font-size:36px;font-weight:300;color:var(--ink);line-height:1.05;margin-bottom:8px;}
+.plan-card.featured .plan-name{color:var(--parch);}
+.plan-tagline{font-family:var(--ff);font-style:italic;font-size:14px;color:var(--stone);margin-bottom:36px;}
+.plan-card.featured .plan-tagline{color:rgba(247,244,238,.3);}
+.plan-price{font-family:var(--ff);font-size:56px;font-weight:300;color:var(--ink);line-height:1;}
+.plan-card.featured .plan-price{color:var(--gold);}
+.plan-period{font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--stone);margin-top:6px;}
+.plan-card.featured .plan-period{color:rgba(247,244,238,.25);}
+.plan-div{border:none;border-top:1px solid var(--sand);margin:28px 0;}
+.plan-card.featured .plan-div{border-color:rgba(247,244,238,.08);}
+.plan-features{list-style:none;margin-bottom:40px;}
+.plan-features li{font-size:13px;color:var(--char);padding:10px 0;border-bottom:1px solid var(--sand);display:flex;gap:12px;align-items:flex-start;line-height:1.5;}
+.plan-features li::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--copper);flex-shrink:0;margin-top:7px;}
+.plan-card.featured .plan-features li{color:rgba(247,244,238,.45);border-color:rgba(247,244,238,.06);}
+.plan-cycle{font-size:13px;color:var(--stone);margin-bottom:6px;}
+.plan-card.featured .plan-cycle{color:rgba(247,244,238,.25);}
+.plan-cycle b{color:var(--ink);font-weight:500;}
+.plan-card.featured .plan-cycle b{color:var(--parch);}
+.plan-btn{width:100%;margin-top:24px;padding:14px;font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;border:1px solid var(--ink);background:transparent;color:var(--ink);cursor:none;transition:all .25s;}
+.plan-btn:hover{background:var(--ink);color:var(--parch);}
+.plan-card.featured .plan-btn{background:var(--copper);border-color:var(--copper);color:var(--parch);}
+.plan-card.featured .plan-btn:hover{background:var(--parch);border-color:var(--parch);color:var(--ink);}
+
+/* ── DAILY CARD ── */
+.daily-sec{background:var(--terracotta);}
+.daily-head{display:grid;grid-template-columns:1fr 1fr;gap:60px;margin-bottom:64px;align-items:end;}
+.progress-widget{border:1px solid rgba(247,244,238,.07);padding:24px;}
+.pw-label{font-size:9px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:rgba(247,244,238,.2);margin-bottom:20px;}
+.pw-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;}
+.pw-stat{text-align:center;padding:12px 8px;background:rgba(247,244,238,.04);}
+.pw-stat-val{font-family:var(--ff);font-size:30px;font-weight:300;color:var(--gold);line-height:1;}
+.pw-stat-lbl{font-size:8px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:rgba(247,244,238,.2);margin-top:5px;}
+/* Day card */
+.day-card{background:rgba(247,244,238,.03);border:1px solid rgba(247,244,238,.07);padding:28px;position:relative;}
+.dc-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid rgba(247,244,238,.07);}
+.dc-day{font-family:var(--ff);font-size:56px;font-weight:300;color:rgba(247,244,238,.1);line-height:.9;}
+.dc-name{font-size:13px;font-weight:500;color:var(--parch);}
+.dc-sub{font-size:11px;color:rgba(247,244,238,.3);}
+.dc-meals{display:flex;flex-direction:column;gap:12px;}
+.dc-meal{display:flex;align-items:flex-start;gap:16px;padding:12px 0;border-bottom:1px solid rgba(247,244,238,.05);}
+.dc-meal:last-child{border-bottom:none;}
+.dc-meal-t{font-size:9px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:rgba(247,244,238,.2);min-width:56px;padding-top:3px;}
+.dc-meal-name{font-family:var(--ff);font-size:16px;font-weight:300;color:var(--parch);flex:1;line-height:1.2;}
+.dc-meal-cal{font-size:10px;color:var(--gold);min-width:60px;text-align:right;padding-top:3px;}
+
+/* ── DELIVERY ── */
+.del-sec{background:var(--parch);border-top:1px solid var(--sand);}
+.del-grid{display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:start;}
+.zones{margin-top:48px;border-top:1px solid var(--sand);}
+.zone-row{display:flex;align-items:center;justify-content:space-between;padding:20px 0;border-bottom:1px solid var(--sand);}
+.zone-l{display:flex;align-items:center;gap:14px;}
+.zone-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.zd-primary{background:var(--copper);}
+.zd-inactive{background:var(--stone);opacity:.4;}
+.zone-name{font-size:15px;color:var(--ink);}
+.zone-sub{font-size:11px;color:var(--stone);margin-top:2px;}
+.zone-badge{font-size:9px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;padding:5px 13px;background:rgba(139,90,43,.07);color:var(--copper);}
+.vessel-policy{margin-top:16px;padding:20px 24px;border:1px solid rgba(139,90,43,.2);background:rgba(139,90,43,.03);}
+.vp-label{font-size:9px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--copper);margin-bottom:8px;}
+.vp-txt{font-size:13px;color:var(--stone);line-height:1.7;}
+.vp-txt b{color:var(--ink);}
+/* Schedule box */
+.sched-box{border:1px solid var(--sand);}
+.sched-head{padding:16px 24px;border-bottom:1px solid var(--sand);}
+.sched-row{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;border-bottom:1px solid var(--sand);font-size:13.5px;}
+.sched-row:last-child{border-bottom:none;}
+.sr-l{color:var(--stone);}
+.sr-v{color:var(--ink);font-weight:500;}
+.del-quote{margin-top:24px;padding:20px 24px;border-left:2px solid var(--copper);}
+.del-quote p{font-family:var(--ff);font-style:italic;font-size:17px;color:var(--char);line-height:1.65;}
+
+/* ── COMMUNITY ── */
+.comm-sec{background:var(--parch);border-top:1px solid var(--sand);}
+.comm-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
+.comm-perks{margin-top:40px;border-top:1px solid var(--sand);}
+.comm-perk{display:flex;gap:20px;padding:18px 0;border-bottom:1px solid var(--sand);}
+.comm-perk:last-child{border-bottom:none;}
+.cp-bullet{font-family:var(--ff);font-style:italic;font-size:12px;color:var(--sand);min-width:20px;padding-top:2px;}
+.cp-txt h4{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:4px;}
+.cp-txt p{font-size:12.5px;color:var(--stone);line-height:1.65;}
+/* Instagram mock */
+.ig-mock{background:var(--warm-dark);border-radius:12px;overflow:hidden;padding:24px;}
+.ig-header{display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid rgba(247,244,238,.06);}
+.ig-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--copper),var(--gold));display:flex;align-items:center;justify-content:center;font-family:var(--ff);font-size:16px;color:var(--parch);font-weight:300;}
+.ig-name{font-size:13px;font-weight:500;color:var(--parch);}
+.ig-sub{font-size:11px;color:rgba(247,244,238,.3);}
+.ig-badge{margin-left:auto;font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;background:rgba(139,90,43,.2);color:var(--copper);border-radius:10px;}
+.ig-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-bottom:14px;}
+.ig-cell{aspect-ratio:1;border-radius:2px;overflow:hidden;position:relative;}
+.ig-cell img{width:100%;height:100%;object-fit:cover;}
+.ig-cell-label{position:absolute;bottom:0;left:0;right:0;padding:6px;background:linear-gradient(to top,rgba(22,20,15,.7),transparent);}
+.ig-cell-label span{font-size:6.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:rgba(247,244,238,.7);}
+.ig-footer{text-align:center;padding:12px;border:1px solid rgba(247,244,238,.06);font-size:11px;color:rgba(247,244,238,.2);}
+
+/* ── PARTNERS ── */
+.partners-strip{padding:44px 0;border-top:1px solid var(--sand);border-bottom:1px solid var(--sand);overflow:hidden;background:var(--parch);}
+.partners-label{text-align:center;margin-bottom:24px;font-size:9px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--stone);}
+.p-track{overflow:hidden;-webkit-mask:linear-gradient(to right,transparent 0%,black 10%,black 90%,transparent 100%);mask:linear-gradient(to right,transparent 0%,black 10%,black 90%,transparent 100%);}
+.p-inner{display:flex;width:max-content;animation:ptick 22s linear infinite;}
+.p-inner:hover{animation-play-state:paused;}
+.p-name{font-family:var(--ff);font-size:clamp(22px,2.5vw,34px);font-weight:300;color:var(--ink);padding:0 36px;white-space:nowrap;letter-spacing:.04em;transition:color .2s;}
+.p-sep{font-family:var(--ff);font-size:clamp(22px,2.5vw,34px);color:var(--copper);opacity:.3;padding:0 4px;}
+@keyframes ptick{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+
+/* ── MEETUP ── */
+.meetup-sec{background:var(--forest);position:relative;overflow:hidden;}
+.meetup-sec::after{content:'Cycle 01';position:absolute;right:-40px;bottom:-60px;font-family:var(--ff);font-size:min(22vw,280px);font-weight:300;color:rgba(247,244,238,.018);line-height:.9;pointer-events:none;}
+.meetup-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
+.meetup-img{border-radius:2px;overflow:hidden;position:relative;}
+.meetup-img img{width:100%;height:420px;object-fit:cover;display:block;transition:transform .6s cubic-bezier(.16,1,.3,1);}
+.meetup-img:hover img{transform:scale(1.03);}
+.meetup-timeline{margin-top:40px;border-top:1px solid rgba(247,244,238,.06);}
+.mt-item{display:flex;gap:20px;padding:18px 0;border-bottom:1px solid rgba(247,244,238,.06);}
+.mt-item:last-child{border-bottom:none;}
+.mt-num{font-family:var(--ff);font-style:italic;font-size:12px;color:rgba(247,244,238,.15);min-width:18px;padding-top:3px;}
+.mt-title{font-size:13.5px;font-weight:500;color:var(--parch);margin-bottom:4px;}
+.mt-desc{font-size:11.5px;color:rgba(247,244,238,.28);line-height:1.6;}
+
+/* ── BMI ── */
+.bmi-sec{background:var(--moss-deep);border-top:1px solid rgba(247,244,238,.05);}
+.bmi-inner{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;}
+.bmi-form{background:rgba(247,244,238,.03);border:1px solid rgba(247,244,238,.07);padding:36px;}
+.bmi-row{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.bmi-field{margin-bottom:24px;}
+.bf-label{font-size:9px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:rgba(247,244,238,.25);display:block;margin-bottom:10px;}
+.bf-input{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(247,244,238,.1);padding:10px 0;font-size:16px;color:var(--parch);outline:none;font-family:var(--fs);transition:border-color .2s;}
+.bf-input:focus{border-color:rgba(201,169,110,.4);}
+.bf-select{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(247,244,238,.1);padding:10px 0;font-size:16px;color:var(--parch);outline:none;font-family:var(--fs);cursor:none;}
+.bf-select option{background:var(--moss-deep);color:var(--parch);}
+.bmi-btn{width:100%;padding:15px;background:var(--copper);border:none;color:var(--parch);font-family:var(--fs);font-size:11px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;cursor:none;margin-top:8px;transition:background .25s;}
+.bmi-btn:hover{background:var(--copper-l);}
+.bmi-out{display:none;margin-top:20px;border:1px solid rgba(247,244,238,.07);padding:24px;}
+.bmi-out-val{font-family:var(--ff);font-size:56px;font-weight:300;color:var(--gold);line-height:1;margin-bottom:4px;}
+.bmi-out-sub{font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:rgba(247,244,238,.2);margin-bottom:16px;}
+.bmi-out-text{font-size:13px;color:rgba(247,244,238,.4);line-height:1.75;}
+
+/* ── APPLY ── */
+.apply-sec{background:var(--warm-dark);position:relative;overflow:hidden;border-top:1px solid rgba(247,244,238,.05);}
+.apply-sec::before{content:'40';position:absolute;right:-100px;bottom:-120px;font-family:var(--ff);font-size:min(46vw,560px);font-weight:300;color:rgba(247,244,238,.02);line-height:.9;pointer-events:none;}
+.apply-grid{display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:center;position:relative;z-index:1;}
+.apply-perks{margin-top:52px;border-top:1px solid rgba(247,244,238,.07);}
+.aperk{display:flex;align-items:baseline;gap:16px;padding:16px 0;border-bottom:1px solid rgba(247,244,238,.05);font-size:13.5px;color:rgba(247,244,238,.3);}
+.aperk b{font-family:var(--ff);font-size:32px;font-weight:300;color:var(--gold);line-height:1;font-style:italic;}
+/* Spots */
+.spots-wrap{margin-bottom:32px;}
+.spots-bar{height:2px;background:rgba(247,244,238,.07);border-radius:1px;margin-bottom:10px;}
+.spots-fill{height:100%;background:var(--copper);border-radius:1px;width:0;transition:width 1.2s cubic-bezier(.16,1,.3,1);}
+.spots-txt{font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:rgba(247,244,238,.25);}
+/* Form */
+.apply-form{background:rgba(247,244,238,.025);border:1px solid rgba(247,244,238,.07);padding:40px;}
+.ff{margin-bottom:28px;}
+.fl{font-size:9px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:rgba(247,244,238,.25);display:block;margin-bottom:10px;}
+.fi{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(247,244,238,.1);padding:10px 0;font-size:15px;color:var(--parch);font-family:var(--fs);outline:none;transition:border-color .2s;}
+.fi:focus{border-color:rgba(201,169,110,.4);}
+.fs{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(247,244,238,.1);padding:10px 0;font-size:15px;color:var(--parch);font-family:var(--fs);outline:none;cursor:none;}
+.fs option{background:var(--warm-dark);}
+.fsub{width:100%;background:var(--copper);border:none;color:var(--parch);font-family:var(--fs);font-size:11px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;padding:17px;cursor:none;margin-top:8px;transition:background .25s;}
+.fsub:hover{background:var(--copper-l);}
+.fnote{font-size:11px;color:rgba(247,244,238,.2);margin-top:14px;text-align:center;}
+
+/* ── FOOTER ── */
+footer{background:var(--warm-dark);padding:80px 72px 48px;}
+.ft-inner{max-width:var(--max);margin:0 auto;}
+.ft-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:60px;margin-bottom:60px;padding-bottom:60px;border-bottom:1px solid rgba(247,244,238,.06);}
+.ft-brand{font-family:var(--ff);font-size:28px;font-weight:300;color:var(--parch);letter-spacing:.06em;margin-bottom:16px;}
+.ft-brand em{font-style:italic;color:var(--gold);}
+.ft-desc{font-size:13px;color:rgba(247,244,238,.3);line-height:1.7;max-width:280px;}
+.ft-col h5{font-size:9px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:rgba(247,244,238,.2);margin-bottom:20px;}
+.ft-links{list-style:none;display:flex;flex-direction:column;gap:10px;}
+.ft-links a,.ft-links li{font-size:13px;color:rgba(247,244,238,.4);transition:color .2s;}
+.ft-links a:hover{color:var(--parch);}
+.ft-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+.ft-copy{font-size:12px;color:rgba(247,244,238,.2);letter-spacing:.04em;}
+.ft-by{font-family:var(--ff);font-style:italic;font-size:13px;color:rgba(247,244,238,.15);}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr;min-height:auto;}
+  .hero-r{min-height:60vw;}
+  .vessel-grid,.cycle-head,.meals-head,.plans-head,.daily-head,.del-grid,.comm-grid,.meetup-grid,.bmi-inner,.apply-grid,.ft-top{grid-template-columns:1fr;gap:60px;}
+  .cycle-grid{grid-template-columns:1fr;}
+  .cday:nth-child(odd){padding-right:0;border-right:none;}
+  .cday:nth-child(even){padding-left:0;}
+  nav{padding:24px 32px;}
+  nav.scrolled{padding:16px 32px;}
+  .sec-pad{padding:80px 32px;}
+  .meal-track{flex-wrap:wrap;}
+  .meal-item{min-width:50%;}
+  .plans-grid{grid-template-columns:1fr;}
+  .plan-card{border-right:none;border-bottom:1px solid var(--sand);}
+  .nav-links{display:none;}
+  .nav-toggle{display:flex;}
+  #cursor{display:none;}
+  body{cursor:auto;}
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div id="cursor"></div>
+<!-- GRAIN -->
+<div class="grain" aria-hidden="true"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a class="logo" href="#">Kō<em>sh</em></a>
+  <div class="nav-r">
+    <ul class="nav-links">
+      <li><a href="#vessel">The box</a></li>
+      <li><a href="#cycle">28 days</a></li>
+      <li><a href="#plans">Plan</a></li>
+      <li><a href="#community">Community</a></li>
+      <li><a href="#delivery">Delivery</a></li>
+      <li><a href="https://onboardingatkosh.netlify.app/" target="_blank" rel="noopener" class="nav-apply">Apply</a></li>
+    </ul>
+    <div class="nav-toggle" id="tog" role="button" tabindex="0" aria-label="Menu">
+      <span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mob-menu" id="mob">
+  <a href="#vessel" onclick="cm()">The box</a>
+  <a href="#cycle" onclick="cm()">28 days</a>
+  <a href="#plans" onclick="cm()">Plan</a>
+  <a href="#community" onclick="cm()">Community</a>
+  <a href="#delivery" onclick="cm()">Delivery</a>
+  <a href="#apply" onclick="cm()">Apply</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-l">
+    <div class="h-eyebrow">
+      <span class="h-eyebrow-line"></span>
+      <span class="h-eyebrow-txt">Private kitchen · Sadashivanagar, Bengaluru</span>
+    </div>
+    <h1 class="hero-h1">
+      Precision<br>
+      <em>food,</em><br>
+      <span class="outline">daily.</span>
+    </h1>
+    <p class="hero-sub">A private kitchen that cooks for 40 members. Every meal built to your biology. Delivered in your named vessel, every morning. No plastic. No repetition. No guesswork.</p>
+    <div class="hero-ctas">
+      <a class="btn-fill" href="#apply">
+        Apply for membership
+        <span class="arr">→</span>
+      </a>
+      <a class="btn-ghost" href="#vessel">How it works ↓</a>
+    </div>
+    <div class="hero-numbers">
+      <div class="hn-item">
+        <span class="hn-val">40</span>
+        <span class="hn-lbl">Members total</span>
+      </div>
+      <div class="hn-item">
+        <span class="hn-val">28</span>
+        <span class="hn-lbl">Day cycle</span>
+      </div>
+      <div class="hn-item">
+        <span class="hn-val">0</span>
+        <span class="hn-lbl">Repeated dishes</span>
+      </div>
+      <div class="hn-item">
+        <span class="hn-val">5</span>
+        <span class="hn-lbl">Meals per day</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-r">
+    <div class="hero-r-media">
+      <img src="https://images.unsplash.com/photo-1547592180-85f173990554?w=1200&q=80&fit=crop" alt="Precision meal preparation">
+    </div>
+    <div class="hero-r-overlay"></div>
+    <!-- rings -->
+    <div class="hero-ring"></div>
+    <div class="hero-ring hero-ring-2"></div>
+    <div class="hero-ring hero-ring-3"></div>
+    <!-- Vessel art -->
+    <div class="vessel-comp">
+      <div class="vc-handle"></div>
+      <div class="vc-lid"></div>
+      <div class="vc-body">
+        <div class="vc-name">Arjun Mehta · Day 14</div>
+      </div>
+    </div>
+    <div class="vc-copper">
+      <div class="vcc-lid"></div>
+      <div class="vcc-body"></div>
+    </div>
+    <!-- Floating cards -->
+    <div class="hero-card hc-1">
+      <div class="hc-label">Today's protein</div>
+      <div class="hc-val">142g</div>
+      <div class="hc-sub">Your target: 140g</div>
+    </div>
+    <div class="hero-card hc-2">
+      <div class="hc-label">Delivered by</div>
+      <div class="hc-val">7:58 am</div>
+      <div class="hc-sub">Day 14 of 28</div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-strip">
+  <div class="marquee-inner">
+    <!-- set 1 -->
+    <div class="marquee-item"><span class="mi-dot"></span><span class="mi-txt">Named boxes, every morning</span></div>
+    <div class="marquee-item"><span class="mi-dot"></span><span class="mi-txt">Zero plastic. Always.</span></div>
+    <div class="marquee-item"><span class="mi-dot"></span><span class="mi-txt">28 days, zero repetition</span></div>
+    <div class="marquee-item"><span class="mi-dot"></span><span class="mi-txt">Portioned to your biology</span></div>
+    <div class="marquee-item"><span class="mi-dot"></span><span class="mi-txt">40 members. Hard cap.</span></div>
+    <div class="marquee-item"><span class="mi-dot"></span><span class="mi-txt">Sadashivanagar · Bengaluru</span></div>
+    <div class="marquee-item"><span class="mi-dot"></span><span class="mi-txt">Chef-quality, daily</span></div>
+    <div class="marquee-item"><span class="mi-dot"></span><span class="mi-txt">Yours forever.</span></div>
+    <!-- set 2 (duplicate for seamless) -->
+    <div class="marquee-item"><span class="mi-dot"></span><span class="mi-txt">Named boxes, every morning</span></div>
+    <div class="marquee-item"><span class="mi-dot"></span><span class="mi-txt">Zero plastic. Always.</span></div>
+    <div class="marquee-item"><span class="mi-dot"></span><span class="mi-txt">28 days, zero repetition</span></div>
+    <div class="marquee-item"><span class="mi-dot"></span><span class="mi-txt">Portioned to your biology</span></div>
+    <div class="marquee-item"><span class="mi-dot"></span><span class="mi-txt">40 members. Hard cap.</span></div>
+    <div class="marquee-item"><span class="mi-dot"></span><span class="mi-txt">Sadashivanagar · Bengaluru</span></div>
+    <div class="marquee-item"><span class="mi-dot"></span><span class="mi-txt">Chef-quality, daily</span></div>
+    <div class="marquee-item"><span class="mi-dot"></span><span class="mi-txt">Yours forever.</span></div>
+  </div>
+</div>
+
+<!-- BOX SECTION -->
+<section class="vessel-section sec-pad" id="vessel">
+  <div class="sec-inner">
+    <div class="vessel-grid">
+      <div>
+        <div class="eyebrow rev">Your box</div>
+        <h2 class="h2 rev d1">Not a container.<br><em>A commitment.</em></h2>
+        <p class="body-lg rev d2" style="margin-top:24px;">Your Kōsh box is ceramic-coated glass — built for food, not plastic. It is made specifically for you, with your name on it. At the end of your subscription, it does not go back to us. It goes home with you. Permanently yours.</p>
+        <div class="vstep rev d2">
+          <div class="vs-num">01</div>
+          <div class="vs-content">
+            <h4>Ceramic-coated glass, made for food</h4>
+            <p>No leaching, no plastic, no compromise. Designed to hold heat, keep food fresh, and look like something worth opening.</p>
+          </div>
+        </div>
+        <div class="vstep rev d3">
+          <div class="vs-num">02</div>
+          <div class="vs-content">
+            <h4>Your name. Only yours.</h4>
+            <p>Every box is individual to the member it is made for. No two are the same. A new member gets a new box — your box is never reused.</p>
+          </div>
+        </div>
+        <div class="vstep rev d3">
+          <div class="vs-num">03</div>
+          <div class="vs-content">
+            <h4>Portioned to your numbers</h4>
+            <p>Same kitchen. Same menu. Different portion sizes, calibrated to your calorie target and macro split each day.</p>
+          </div>
+        </div>
+        <div class="vstep rev d4">
+          <div class="vs-num">04</div>
+          <div class="vs-content">
+            <h4>Yours forever at the end</h4>
+            <p>When your subscription ends, the box is handed over to you. A lasting record of the cycle you committed to.</p>
+          </div>
+        </div>
+      </div>
+      <div class="vessel-art rev d1">
+        <div class="va-bg"></div>
+        <div class="va-inner">
+          <div class="va-steel-lid"></div>
+          <div class="va-steel-body">
+            <div class="va-nameplate"><span>Priya Sharma</span></div>
+          </div>
+        </div>
+        <div class="va-note">
+          <p>Day 8 · Lunch</p>
+          <p style="margin-top:4px;">Seared chicken breast · Quinoa tabbouleh · Roasted courgette</p>
+          <span>490 kcal · 44g protein</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROMISE -->
+<section class="promise-sec">
+  <div class="promise-inner">
+    <blockquote class="promise-quote rev">
+      "We cook for forty people.<br>
+      <em>Every meal is different.</em><br>
+      Every portion is personal.<br>
+      That is the entire idea."
+    </blockquote>
+    <p class="promise-attr rev d1">— Kōsh kitchen · Sadashivanagar, Bengaluru</p>
+  </div>
+</section>
+
+<!-- 28-DAY CYCLE -->
+<section class="cycle-sec sec-pad" id="cycle">
+  <div class="sec-inner">
+    <div class="cycle-head">
+      <div class="rev">
+        <div class="eyebrow light">The 28-day cycle</div>
+        <h2 class="h2 light" style="margin-top:0;">Sample menu.<br><em>Nothing is fixed.</em></h2>
+      </div>
+      <div class="rev d1">
+        <p class="body-md" style="color:rgba(247,244,238,.35);">Each 28-day cycle runs 140 different dishes across all five daily meals. The same dish does not appear twice in a cycle. The menu below is illustrative — actual dishes change with season, sourcing, and craving polls. No repeats. Ever.</p>
+      </div>
+    </div>
+    <div class="cycle-grid rev">
+      <div class="cday"><div class="cday-n">Day 01</div><div><div class="cday-meal">Egg white omelette · Grilled chicken breast · Zucchini stir-fry</div><div class="cday-note">Cycle begins. First box. Clean slate, high protein.</div></div></div>
+      <div class="cday"><div class="cday-n">Day 02</div><div><div class="cday-meal">Greek yoghurt bowl · Tuna brown rice bowl · Seared salmon</div><div class="cday-note">Omega-3 day. Light, fast, precise.</div></div></div>
+      <div class="cday"><div class="cday-n">Day 04</div><div><div class="cday-meal">Protein pancakes · Turkey meatballs · Baked cod + greens</div><div class="cday-note">First time a pancake will feel like a responsible decision.</div></div></div>
+      <div class="cday"><div class="cday-n">Day 07</div><div><div class="cday-meal">Scrambled eggs + smoked chicken · Grilled sirloin · Roast veg quinoa</div><div class="cday-note">End of week one. Red meat, earned.</div></div></div>
+      <div class="cday"><div class="cday-n">Day 09</div><div><div class="cday-meal">Cottage cheese toast · Chicken shawarma bowl · Lamb ragu + lentils</div><div class="cday-note">Mediterranean week. Every bite counts.</div></div></div>
+      <div class="cday"><div class="cday-n">Day 12</div><div><div class="cday-meal">Whey smoothie bowl · Chicken Caesar wrap · Grilled prawn + asparagus</div><div class="cday-note">Clean, fast, no shortcuts on quality.</div></div></div>
+      <div class="cday"><div class="cday-n">Day 14</div><div><div class="cday-meal">Mid-cycle — optional cohort check-in</div><div class="cday-note">Casual, informal. Meet the other 39. Compare notes.</div></div></div>
+      <div class="cday"><div class="cday-n">Day 17</div><div><div class="cday-meal">Smoked salmon bagel · Pulled chicken + sweet potato · Turkey chilli</div><div class="cday-note">Slow-cooked, high-yield. Week three starts strong.</div></div></div>
+      <div class="cday"><div class="cday-n">Day 20</div><div><div class="cday-meal">Poached eggs + lean ham · Grilled chicken + farro · Beef tenderloin</div><div class="cday-note">Your body is already used to this rhythm.</div></div></div>
+      <div class="cday"><div class="cday-n">Day 22</div><div><div class="cday-meal">Ricotta + berry bowl · Chicken pesto pasta · Pan-seared duck breast</div><div class="cday-note">The craving poll result from week two. We listened.</div></div></div>
+      <div class="cday"><div class="cday-n">Day 25</div><div><div class="cday-meal">Protein waffles · Harissa chicken + couscous · Baked sea bass</div><div class="cday-note">North African spice meets Bengaluru precision.</div></div></div>
+      <div class="cday"><div class="cday-n">Day 28</div><div><div class="cday-meal">Chef's finale · Dessert drop · Cohort dinner</div><div class="cday-note">The 28th day. The cohort gathers. Cycle 02 begins tomorrow.</div></div></div>
+    </div>
+    <p class="cycle-fn rev">— 140 unique dishes per cycle · Zero repeats · Menu resets every 28 days —</p>
+  </div>
+</section>
+
+<!-- FIVE MEALS -->
+<section class="meals-sec sec-pad" id="box">
+  <div class="sec-inner">
+    <div class="meals-head">
+      <div class="rev">
+        <div class="eyebrow">What's in your vessel</div>
+        <h2 class="h2" style="margin-top:0;">Five meals.<br><em>Full day covered.</em></h2>
+      </div>
+      <div class="rev d1">
+        <p class="body-md">All meals are portioned to your calorie target and macro split. Same kitchen, same chef-quality dishes — your vessel gets the quantity your body actually needs that day.</p>
+      </div>
+    </div>
+    <div class="meal-track rev d1">
+      <div class="meal-item">
+        <div class="meal-num">01</div>
+        <div class="meal-time">Breakfast · 7–8 am</div>
+        <div class="meal-name">High-protein, clean start</div>
+        <div class="meal-desc">Egg white omelettes, smoked salmon, Greek yoghurt bowls, ricotta with berries. Calibrated to your morning macro target. Reheats in 3 minutes.</div>
+      </div>
+      <div class="meal-item">
+        <div class="meal-num">02</div>
+        <div class="meal-time">Morning snack · 10–11 am</div>
+        <div class="meal-name">Macro-counted, portable</div>
+        <div class="meal-desc">Cottage cheese with seeds, protein energy balls, turkey roll-ups. Bridges breakfast to lunch. Keeps energy stable.</div>
+      </div>
+      <div class="meal-item">
+        <div class="meal-num">03</div>
+        <div class="meal-time">Lunch · 1–2 pm</div>
+        <div class="meal-name">The main event</div>
+        <div class="meal-desc">Grilled sirloin, seared salmon, chicken pesto, tuna niçoise, harissa lamb. Chef-quality, warm, substantial. Reheats in 4 minutes.</div>
+      </div>
+      <div class="meal-item">
+        <div class="meal-num">04</div>
+        <div class="meal-time">Evening snack · 4–5 pm</div>
+        <div class="meal-name">Light, satisfying, no spike</div>
+        <div class="meal-desc">Whipped cottage cheese, smoked turkey wraps, cucumber with hummus. Prevents the evening binge. Ready to eat.</div>
+      </div>
+      <div class="meal-item">
+        <div class="meal-num">05</div>
+        <div class="meal-time">Dinner · 7–8 pm</div>
+        <div class="meal-name">Refined, lighter, chef-quality</div>
+        <div class="meal-desc">Pan-seared sea bass, duck breast, prawn with asparagus, baked cod. Lighter than lunch, higher in craft. Reheats in 4–5 min.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- PLANS -->
+<section class="plans-sec sec-pad" id="plans">
+  <div class="sec-inner">
+    <div class="plans-head">
+      <div class="rev">
+        <div class="eyebrow">The membership</div>
+        <h2 class="h2" style="margin-top:0;">One plan.<br><em>All five meals.</em></h2>
+      </div>
+      <p class="body-md rev d1">The same kitchen-crafted menu goes to all 40 members — what changes is your portion. Your calorie target and macro split determine exactly how much of each dish lands in your box. Same quality, built for your numbers.</p>
+    </div>
+    <div class="rev d1" style="display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--sand);">
+      <div class="plan-card featured" style="border-right:1px solid rgba(247,244,238,.1);">
+        <div class="plan-tag pt-feat">Full day · 5 meals</div>
+        <div class="plan-name">The Kōsh<br>Programme</div>
+        <div class="plan-tagline">Every meal. Every day. All yours.</div>
+        <div class="plan-price">₹2,400</div>
+        <div class="plan-period">per day · billed per 28-day cycle</div>
+        <hr class="plan-div">
+        <ul class="plan-features">
+          <li>Breakfast — high-protein, portioned to your target</li>
+          <li>Morning snack — macro-counted, portable</li>
+          <li>Lunch — full plate, your calorie target</li>
+          <li>Evening snack — light, satisfying, no spike</li>
+          <li>Dinner — refined, chef-quality, lighter than lunch</li>
+          <li>Ceramic-coated glass box, your name on it, yours forever</li>
+          <li>Daily macro card with every delivery</li>
+          <li>28-day non-repeating menu — 140 unique dishes per cycle</li>
+          <li>Weekly macro summary every Sunday</li>
+          <li>Access to private @kosh.table community</li>
+          <li>Weekly craving personalisation poll</li>
+        </ul>
+        <div class="plan-cycle">28 days: <b>₹67,200 / cycle</b></div>
+        <button class="plan-btn" onclick="document.getElementById('apply').scrollIntoView({behavior:'smooth'})">Apply for membership</button>
+      </div>
+      <div class="plan-card" style="display:flex;flex-direction:column;justify-content:center;gap:32px;background:rgba(139,90,43,.02);">
+        <div>
+          <div class="eyebrow" style="margin-bottom:16px;">How your portion works</div>
+          <p class="body-md">Fill in your stats when you apply. We set your calorie target and macro split before your first delivery. Every dish is portioned to those numbers — no two boxes are identical.</p>
+        </div>
+        <div style="border-top:1px solid var(--sand);padding-top:32px;display:flex;flex-direction:column;gap:16px;">
+          <div style="display:flex;justify-content:space-between;font-size:13.5px;padding-bottom:14px;border-bottom:1px solid var(--sand);"><span style="color:var(--stone);">Calorie target</span><span style="color:var(--ink);font-weight:500;">Your number</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:13.5px;padding-bottom:14px;border-bottom:1px solid var(--sand);"><span style="color:var(--stone);">Protein target</span><span style="color:var(--ink);font-weight:500;">Your number</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:13.5px;padding-bottom:14px;border-bottom:1px solid var(--sand);"><span style="color:var(--stone);">Carb / fat split</span><span style="color:var(--ink);font-weight:500;">Goal-based</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:13.5px;padding-bottom:14px;border-bottom:1px solid var(--sand);"><span style="color:var(--stone);">Dietary restrictions</span><span style="color:var(--ink);font-weight:500;">Fully accommodated</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:13.5px;"><span style="color:var(--stone);">Cycle recalibration</span><span style="color:var(--ink);font-weight:500;">Every 28 days</span></div>
+        </div>
+        <div style="margin-top:8px;padding:18px 20px;border-left:2px solid var(--copper);">
+          <p style="font-family:var(--ff);font-style:italic;font-size:17px;color:var(--char);line-height:1.6;">"Same kitchen. Same menu. Your portion is the only thing that changes."</p>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:14px;padding:20px 0;border-top:1px solid var(--sand);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;" class="rev d2">
+      <p class="body-md" style="font-size:13px;">4 Pause Meals per cycle. Kitchen runs Mon–Sun. Multiple delivery slots at +₹150/day.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <span style="font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;padding:5px 14px;border:1px solid var(--sand);color:var(--stone);">4 Pause Meals</span>
+        <span style="font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;padding:5px 14px;border:1px solid var(--sand);color:var(--stone);">Mon–Sun</span>
+        <span style="font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;padding:5px 14px;border:1px solid var(--sand);color:var(--stone);">Dessert add-on</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DAILY CARD -->
+<section class="daily-sec sec-pad">
+  <div class="sec-inner">
+    <div class="daily-head">
+      <div class="rev">
+        <div class="eyebrow light">Inside your vessel</div>
+        <h2 class="h2 light" style="margin-top:0;">Everything you need<br><em>to eat precisely today.</em></h2>
+      </div>
+      <div class="progress-widget rev d1">
+        <div class="pw-label">Weekly progress · sent every Sunday</div>
+        <div class="pw-stats">
+          <div class="pw-stat"><div class="pw-stat-val">94%</div><div class="pw-stat-lbl">Protein hit</div></div>
+          <div class="pw-stat"><div class="pw-stat-val">7/7</div><div class="pw-stat-lbl">Meals received</div></div>
+          <div class="pw-stat"><div class="pw-stat-val">Wk 2</div><div class="pw-stat-lbl">Into cycle</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="day-card rev d1">
+      <div class="dc-header">
+        <div class="dc-day">14</div>
+        <div>
+          <div class="dc-name">Arjun Mehta</div>
+          <div class="dc-sub">Cycle 01 · Day 14 of 28 · The Kōsh Programme</div>
+        </div>
+      </div>
+      <div class="dc-meals">
+        <div class="dc-meal"><div class="dc-meal-t">7:30 am</div><div class="dc-meal-name">Egg white omelette + smoked chicken</div><div class="dc-meal-cal">360 kcal · 42g P</div></div>
+        <div class="dc-meal"><div class="dc-meal-t">10:30 am</div><div class="dc-meal-name">Greek yoghurt + mixed berries + walnuts</div><div class="dc-meal-cal">195 kcal · 18g P</div></div>
+        <div class="dc-meal"><div class="dc-meal-t">1:00 pm</div><div class="dc-meal-name">Grilled sirloin + roasted sweet potato + greens</div><div class="dc-meal-cal">530 kcal · 48g P</div></div>
+        <div class="dc-meal"><div class="dc-meal-t">4:30 pm</div><div class="dc-meal-name">Cottage cheese + cucumber + flaxseed crackers</div><div class="dc-meal-cal">190 kcal · 20g P</div></div>
+        <div class="dc-meal"><div class="dc-meal-t">7:30 pm</div><div class="dc-meal-name">Seared salmon + asparagus + quinoa</div><div class="dc-meal-cal">385 kcal · 40g P</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMMUNITY -->
+<section class="comm-sec sec-pad" id="community">
+  <div class="sec-inner">
+    <div class="comm-grid">
+      <div>
+        <div class="eyebrow rev">The Kōsh community</div>
+        <h2 class="h2 rev d1" style="margin-top:0;">Private.<br><em>Members only.</em></h2>
+        <p class="body-lg rev d2" style="margin-top:24px;">We are building a fixed cohort of 40 people who are serious about eating right — and who can hold each other to it. The private <strong>@kosh.table</strong> Instagram account is the digital layer. The real community happens in person.</p>
+      </div>
+      <div class="rev d1">
+        <div class="ig-mock">
+          <div class="ig-header">
+            <div class="ig-avatar">K</div>
+            <div>
+              <div class="ig-name">@kosh.table</div>
+              <div class="ig-sub">Private · Members only</div>
+            </div>
+            <div class="ig-badge">Members only</div>
+          </div>
+          <div class="ig-grid">
+            <div class="ig-cell"><img src="https://images.unsplash.com/photo-1581299894007-aaa50297cf16?w=200&q=70&fit=crop" alt=""><div class="ig-cell-label"><span>Founder story</span></div></div>
+            <div class="ig-cell"><img src="https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=200&q=70&fit=crop" alt=""><div class="ig-cell-label"><span>Kitchen prep</span></div></div>
+            <div class="ig-cell"><img src="https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=200&q=70&fit=crop" alt=""><div class="ig-cell-label"><span>Day 12</span></div></div>
+            <div class="ig-cell"><img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=200&q=70&fit=crop" alt=""><div class="ig-cell-label"><span>Cycle meetup</span></div></div>
+            <div class="ig-cell"><img src="https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=200&q=70&fit=crop" alt=""><div class="ig-cell-label"><span>Dessert drop</span></div></div>
+            <div class="ig-cell"><img src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=200&q=70&fit=crop" alt=""><div class="ig-cell-label"><span>Partner drops</span></div></div>
+            <div class="ig-cell"><img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=200&q=70&fit=crop" alt=""><div class="ig-cell-label"><span>Member meals</span></div></div>
+            <div class="ig-cell"><img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=200&q=70&fit=crop" alt=""><div class="ig-cell-label"><span>Community</span></div></div>
+            <div class="ig-cell"><img src="https://images.unsplash.com/photo-1547592180-85f173990554?w=200&q=70&fit=crop" alt=""><div class="ig-cell-label"><span>Cleanliness</span></div></div>
+          </div>
+          <div class="ig-footer">Follow request sent after your first delivery</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DELIVERY -->
+<section class="del-sec sec-pad" id="delivery">
+  <div class="sec-inner">
+    <div class="del-grid">
+      <div class="rev">
+        <div class="eyebrow">Delivery zones</div>
+        <h2 class="h2" style="margin-top:0;">One delivery.<br><em>Every morning.</em></h2>
+        <p class="body-lg" style="margin-top:24px;">All meals leave our kitchen together — breakfast, snacks, lunch, and dinner — by 8 am, seven days a week including weekends.</p>
+        <div class="zones">
+          <div class="zone-row">
+            <div class="zone-l"><div class="zone-dot zd-primary"></div><div><div class="zone-name">Sadashivanagar</div><div class="zone-sub">Palace Road · Bhashyam Road · Layout</div></div></div>
+            <span class="zone-badge">Free delivery</span>
+          </div>
+          <div class="zone-row">
+            <div class="zone-l"><div class="zone-dot zd-primary"></div><div><div class="zone-name">Dollars Colony</div><div class="zone-sub">All sectors</div></div></div>
+            <span class="zone-badge">Free delivery</span>
+          </div>
+          <div class="zone-row" style="opacity:.3;">
+            <div class="zone-l"><div class="zone-dot zd-inactive"></div><div><div class="zone-name">Other areas</div><div class="zone-sub">Not currently served</div></div></div>
+            <span style="font-size:12px;color:var(--stone);">Waitlist only</span>
+          </div>
+        </div>
+        <div style="margin-top:16px;padding:18px 22px;border:1px solid var(--sand);">
+          <p style="font-size:13px;color:var(--stone);line-height:1.7;">We are hard-capped at <b style="color:var(--ink);">40 households</b>. This is the number at which the kitchen can maintain precision. When the list is full, it is closed.</p>
+        </div>
+        <div class="vessel-policy">
+          <div class="vp-label">Your box</div>
+          <p class="vp-txt">Your ceramic-coated glass box is made for you and only you. It travels to our kitchen each night, is sanitised overnight, and returns the next morning with your meals. At the end of your subscription, it is yours to keep — permanently.</p>
+        </div>
+      </div>
+      <div class="rev d1" style="display:flex;flex-direction:column;gap:24px;">
+        <div style="border:1px solid var(--sand);padding:36px;">
+          <div class="eyebrow" style="margin-bottom:20px;">How the day works</div>
+          <div style="display:flex;flex-direction:column;gap:0;">
+            <div style="display:flex;align-items:baseline;gap:20px;padding:16px 0;border-bottom:1px solid var(--sand);"><span style="font-family:var(--ff);font-style:italic;font-size:13px;color:var(--sand);min-width:72px;">7:30 am</span><span style="font-size:13.5px;color:var(--stone);">Box delivered. Breakfast ready in 3 minutes.</span></div>
+            <div style="display:flex;align-items:baseline;gap:20px;padding:16px 0;border-bottom:1px solid var(--sand);"><span style="font-family:var(--ff);font-style:italic;font-size:13px;color:var(--sand);min-width:72px;">10:30 am</span><span style="font-size:13.5px;color:var(--stone);">Morning snack. Ready to eat.</span></div>
+            <div style="display:flex;align-items:baseline;gap:20px;padding:16px 0;border-bottom:1px solid var(--sand);"><span style="font-family:var(--ff);font-style:italic;font-size:13px;color:var(--sand);min-width:72px;">1:00 pm</span><span style="font-size:13.5px;color:var(--stone);">Lunch. Reheats in 4 minutes.</span></div>
+            <div style="display:flex;align-items:baseline;gap:20px;padding:16px 0;border-bottom:1px solid var(--sand);"><span style="font-family:var(--ff);font-style:italic;font-size:13px;color:var(--sand);min-width:72px;">4:30 pm</span><span style="font-size:13.5px;color:var(--stone);">Evening snack. Ready to eat.</span></div>
+            <div style="display:flex;align-items:baseline;gap:20px;padding:16px 0;border-bottom:1px solid var(--sand);"><span style="font-family:var(--ff);font-style:italic;font-size:13px;color:var(--sand);min-width:72px;">7:30 pm</span><span style="font-size:13.5px;color:var(--stone);">Dinner. Reheats in 4–5 minutes.</span></div>
+            <div style="display:flex;align-items:baseline;gap:20px;padding:16px 0;"><span style="font-family:var(--ff);font-style:italic;font-size:13px;color:var(--sand);min-width:72px;">9:00 pm</span><span style="font-size:13.5px;color:var(--stone);">Box left at door. Collected overnight. Back tomorrow.</span></div>
+          </div>
+        </div>
+        <div class="del-quote">
+          <p>Your box is on its way. Day 14. Something you have not had before.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BMI / CALORIE CALCULATOR -->
+<section class="bmi-sec sec-pad" id="calculator">
+  <div class="sec-inner">
+    <div style="margin-bottom:56px;" class="rev">
+      <div class="eyebrow light">Calorie calculator</div>
+      <h2 class="h2 light" style="margin-top:0;">Find your<br><em>numbers first.</em></h2>
+    </div>
+    <div class="bmi-inner">
+      <div class="rev d1">
+        <p class="body-md" style="color:rgba(247,244,238,.35);margin-bottom:32px;">Enter your stats to estimate your daily calorie and macro targets. Share these when you apply — we use them to set your exact portion for every meal in the cycle.</p>
+        <div class="bmi-form">
+          <div class="bmi-row">
+            <div class="bmi-field"><label class="bf-label" for="bh">Height (cm)</label><input class="bf-input" type="number" id="bh" placeholder="172"></div>
+            <div class="bmi-field"><label class="bf-label" for="bw">Weight (kg)</label><input class="bf-input" type="number" id="bw" placeholder="70"></div>
+          </div>
+          <div class="bmi-row">
+            <div class="bmi-field"><label class="bf-label" for="ba">Age</label><input class="bf-input" type="number" id="ba" placeholder="32"></div>
+            <div class="bmi-field"><label class="bf-label" for="bg">Biological sex</label>
+              <select class="bf-select" id="bg">
+                <option value="" disabled selected>Select</option>
+                <option value="m">Male</option>
+                <option value="f">Female</option>
+              </select>
+            </div>
+          </div>
+          <div class="bmi-field"><label class="bf-label" for="bact">Activity level</label>
+            <select class="bf-select" id="bact">
+              <option value="" disabled selected>Select</option>
+              <option value="1.2">Sedentary (desk job, no exercise)</option>
+              <option value="1.375">Lightly active (1–3 days/week)</option>
+              <option value="1.55">Moderately active (3–5 days/week)</option>
+              <option value="1.725">Very active (6–7 days/week)</option>
+              <option value="1.9">Extremely active (athlete)</option>
+            </select>
+          </div>
+          <button class="bmi-btn" onclick="calcBMI()">Calculate my numbers</button>
+          <div class="bmi-out" id="bmi-out">
+            <div class="bmi-out-val" id="bmi-val"></div>
+            <div class="bmi-out-sub">BMI</div>
+            <div class="bmi-out-text" id="bmi-cal-text"></div>
+          </div>
+        </div>
+      </div>
+      <div class="rev d2" style="display:flex;flex-direction:column;gap:24px;">
+        <div style="border:1px solid rgba(247,244,238,.07);padding:28px;">
+          <div class="eyebrow light" style="margin-bottom:16px;">How your portion is set</div>
+          <p style="font-size:14px;color:rgba(247,244,238,.35);line-height:1.75;">Share your calorie target and macro goals when you apply. Before your first delivery, we confirm your numbers and calibrate every portion in the cycle accordingly. At Day 28, we recalibrate for the next cycle based on your feedback.</p>
+        </div>
+        <div style="border:1px solid rgba(247,244,238,.07);padding:28px;">
+          <div class="eyebrow light" style="margin-bottom:16px;">What your plan covers</div>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(247,244,238,.05);font-size:13px;"><span style="color:rgba(247,244,238,.3);">Calorie target</span><span style="color:var(--parch);font-weight:500;">Your number</span></div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(247,244,238,.05);font-size:13px;"><span style="color:rgba(247,244,238,.3);">Protein target</span><span style="color:var(--parch);font-weight:500;">Your number</span></div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(247,244,238,.05);font-size:13px;"><span style="color:rgba(247,244,238,.3);">Carb / fat split</span><span style="color:var(--parch);font-weight:500;">Goal-based</span></div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0;font-size:13px;"><span style="color:rgba(247,244,238,.3);">Dietary restrictions</span><span style="color:var(--parch);font-weight:500;">Fully accommodated</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- APPLY -->
+<section class="apply-sec sec-pad" id="apply">
+  <div class="sec-inner">
+    <div class="apply-grid">
+      <div class="rev">
+        <div class="eyebrow light">Apply for membership</div>
+        <h2 class="h2 light" style="margin-top:0;">We cook for 40.<br><em>You could be one of them.</em></h2>
+        <p class="body-md" style="color:rgba(247,244,238,.35);margin-top:24px;">Spots are limited to 40 households. Click below to begin your application. Takes under 5 minutes. No payment at this stage — we confirm your spot and set your portion targets before your first delivery.</p>
+        <div class="apply-perks">
+          <div class="aperk"><b>40</b>Members. Hard cap. Total. Always.</div>
+          <div class="aperk"><b>0</b>Plastic. In any form. Ever.</div>
+          <div class="aperk"><b>28</b>Days before a dish appears again.</div>
+          <div class="aperk"><b>5</b>Meals per day. Full day covered.</div>
+          <div class="aperk"><b>1</b>Box. Named. Yours forever.</div>
+        </div>
+        <div style="margin-top:24px;padding:18px 22px;border:1px solid rgba(247,244,238,.06);background:rgba(247,244,238,.02);">
+          <div style="font-size:9px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:rgba(247,244,238,.2);margin-bottom:6px;">On the waitlist</div>
+          <p style="font-size:13px;color:rgba(247,244,238,.25);line-height:1.7;">If we are full, you go on the waitlist — not into a void. Waitlisted members receive early access when a spot opens.</p>
+        </div>
+      </div>
+      <div class="rev d1" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:32px;text-align:center;">
+        <div class="spots-wrap" style="width:100%;">
+          <div class="spots-bar"><div class="spots-fill" id="sf"></div></div>
+          <span class="spots-txt" id="st">Checking availability…</span>
+        </div>
+        <div style="border:1px solid rgba(247,244,238,.08);padding:52px 40px;width:100%;display:flex;flex-direction:column;align-items:center;gap:28px;">
+          <div>
+            <div style="font-family:var(--ff);font-size:clamp(28px,3vw,42px);font-weight:300;color:var(--parch);line-height:1.1;margin-bottom:12px;">Ready to begin<br><em style="color:var(--gold);">your cycle?</em></div>
+            <p style="font-size:13px;color:rgba(247,244,238,.3);line-height:1.7;max-width:320px;margin:0 auto;">Fill in your details, your macro goals, and your delivery area. We'll be in touch within 48 hours.</p>
+          </div>
+          <a href="https://onboardingatkosh.netlify.app/" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:14px;background:var(--copper);color:var(--parch);font-family:var(--fs);font-size:12px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;padding:20px 48px;transition:background .25s;text-decoration:none;" onmouseenter="this.style.background='var(--copper-l)'" onmouseleave="this.style.background='var(--copper)'">
+            Begin application <span style="font-size:16px;line-height:1;">→</span>
+          </a>
+          <p style="font-size:11px;color:rgba(247,244,238,.18);letter-spacing:.04em;">No payment at this stage</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ft-inner">
+    <div class="ft-top">
+      <div>
+        <div class="ft-brand">Kō<em>sh</em></div>
+        <p class="ft-desc">A private kitchen in Sadashivanagar, Bengaluru. Forty members. Precision nutrition. Named vessels. No plastic. Operated by Table 14.</p>
+      </div>
+      <div class="ft-col">
+        <h5>Navigate</h5>
+        <ul class="ft-links">
+          <li><a href="#vessel">The box</a></li>
+          <li><a href="#cycle">28-day cycle</a></li>
+          <li><a href="#plans">Plan</a></li>
+          <li><a href="#community">Community</a></li>
+          <li><a href="#delivery">Delivery</a></li>
+          <li><a href="#apply">Apply</a></li>
+        </ul>
+      </div>
+      <div class="ft-col">
+        <h5>Contact</h5>
+        <ul class="ft-links">
+          <li><a href="#">WhatsApp</a></li>
+          <li><a href="#">Email</a></li>
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#">kosh.in</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="ft-bottom">
+      <span class="ft-copy">© 2025 Kōsh · Sadashivanagar, Bengaluru</span>
+      <span class="ft-by">A cloud kitchen by Table 14</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ── CURSOR ── */
+const cur = document.getElementById('cursor');
+document.addEventListener('mousemove', e => {
+  cur.style.left = e.clientX + 'px';
+  cur.style.top = e.clientY + 'px';
+});
+document.querySelectorAll('a,button,.plan-btn,.meal-item,.ig-cell').forEach(el => {
+  el.addEventListener('mouseenter', () => cur.classList.add('big'));
+  el.addEventListener('mouseleave', () => cur.classList.remove('big'));
+});
+
+/* ── NAV ── */
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 50), {passive:true});
+
+const tog = document.getElementById('tog'), mob = document.getElementById('mob');
+tog.addEventListener('click', () => { mob.classList.toggle('open'); document.body.style.overflow = mob.classList.contains('open') ? 'hidden' : ''; });
+function cm() { mob.classList.remove('open'); document.body.style.overflow = ''; }
+
+/* ── REVEAL ── */
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); } });
+}, {threshold:.08, rootMargin:'0px 0px -24px 0px'});
+document.querySelectorAll('.rev').forEach(el => obs.observe(el));
+
+/* ── SPOTS ── */
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('sf').style.width = '15%';
+    document.getElementById('st').textContent = '34 spots remaining of 40';
+  }, 900);
+});
+
+/* ── SMOOTH SCROLL ── */
+document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
+  const t = document.querySelector(a.getAttribute('href'));
+  if (t) { e.preventDefault(); t.scrollIntoView({behavior:'smooth'}); }
+}));
+
+/* ── BMI ── */
+function calcBMI() {
+  const h = parseFloat(document.getElementById('bh').value);
+  const w = parseFloat(document.getElementById('bw').value);
+  const a = parseFloat(document.getElementById('ba').value);
+  const g = document.getElementById('bg').value;
+  const act = parseFloat(document.getElementById('bact').value);
+  if (!h||!w||!a||!g||!act) { alert('Please fill in all fields.'); return; }
+  const bmi = w / ((h/100)**2);
+  let bmr;
+  if (g==='m') bmr = 88.362 + (13.397*w) + (4.799*h) - (5.677*a);
+  else bmr = 447.593 + (9.247*w) + (3.098*h) - (4.330*a);
+  const tdee = Math.round(bmr * act);
+  const bmiVal = bmi.toFixed(1);
+  const bmiCat = bmi<18.5?'Underweight':bmi<25?'Healthy weight':bmi<30?'Overweight':'Obese range';
+  document.getElementById('bmi-val').textContent = bmiVal;
+  document.getElementById('bmi-cal-text').innerHTML = 
+    '<b style="color:var(--gold)">'+tdee.toLocaleString()+' kcal/day</b> estimated maintenance.<br>BMI category: '+bmiCat+'.<br><br>To lose fat: ~'+(tdee-400).toLocaleString()+' kcal<br>To maintain: ~'+tdee.toLocaleString()+' kcal<br>To build: ~'+(tdee+250).toLocaleString()+' kcal<br><br><span style="font-size:11px;opacity:.5">Your Kōsh nutritionist will refine this at consultation.</span>';
+  document.getElementById('bmi-out').style.display = 'block';
+}
+
+/* ── FORM ── */
+function hs(e) {
+  e.preventDefault();
+  const b = document.getElementById('fsb'), n = document.getElementById('fn2');
+  b.textContent = 'Application received.'; b.style.background = 'var(--moss)'; b.disabled = true;
+  n.textContent = 'We will contact you within 48 hours to confirm your spot and set your portion targets.';
+  n.style.color = 'rgba(247,244,238,.3)';
+}
+
+/* ── MEAL ITEM HOVER subtle lift ── */
+document.querySelectorAll('.meal-item').forEach(item => {
+  item.addEventListener('mouseenter', () => item.style.transform = 'translateY(-2px)');
+  item.addEventListener('mouseleave', () => item.style.transform = '');
+});
+</script>
+</body>
+</html>

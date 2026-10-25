@@ -4,7 +4,42 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 
+type CycleDay = { day: string; meal: string; note: string };
+
+const VEG_MENU: CycleDay[] = [
+  { day: 'Day 01', meal: 'Paneer bhurji + multigrain toast · Rajma brown rice bowl · Zucchini stir-fry', note: 'Cycle begins. First box. Clean slate, high protein.' },
+  { day: 'Day 02', meal: 'Greek yoghurt bowl · Chickpea quinoa bowl · Grilled tofu + greens', note: 'Light, fast, precise.' },
+  { day: 'Day 04', meal: 'Protein pancakes · Soya keema + millet roti · Palak paneer + jeera rice', note: 'First time a pancake will feel like a responsible decision.' },
+  { day: 'Day 07', meal: 'Moong dal chilla · Paneer tikka bowl · Roast veg quinoa', note: 'End of week one. Protein, earned.' },
+  { day: 'Day 09', meal: 'Cottage cheese toast · Falafel + hummus bowl · Lentil ragu + wholewheat pasta', note: 'Mediterranean week. Every bite counts.' },
+  { day: 'Day 12', meal: 'Whey smoothie bowl · Paneer Caesar wrap · Grilled halloumi + asparagus', note: 'Clean, fast, no shortcuts on quality.' },
+  { day: 'Day 14', meal: 'Mid-cycle — optional cohort check-in', note: 'Casual, informal. Meet the other 39. Compare notes.' },
+  { day: 'Day 17', meal: 'Besan chilla + mint chutney · Black bean chilli + sweet potato · Tempeh stir-fry', note: 'Slow-cooked, high-yield. Week three starts strong.' },
+  { day: 'Day 20', meal: 'Tofu scramble + sourdough · Paneer + farro bowl · Mushroom stroganoff', note: 'Your body is already used to this rhythm.' },
+  { day: 'Day 22', meal: 'Ricotta + berry bowl · Pesto pasta + roasted veg · Paneer makhani (light)', note: 'The craving poll result from week two. We listened.' },
+  { day: 'Day 25', meal: 'Protein waffles · Harissa chickpeas + couscous · Baked tofu + greens', note: 'North African spice meets Bengaluru precision.' },
+  { day: 'Day 28', meal: "Chef's finale · Dessert drop · Cohort dinner", note: 'The 28th day. The cohort gathers. Cycle 02 begins tomorrow.' },
+];
+
+const NONVEG_MENU: CycleDay[] = [
+  { day: 'Day 01', meal: 'Egg white omelette · Grilled chicken breast · Chicken zucchini stir-fry', note: 'Cycle begins. First box. Clean slate, high protein.' },
+  { day: 'Day 02', meal: 'Smoked salmon scramble · Tuna brown rice bowl · Seared salmon', note: 'Omega-3 day. Light, fast, precise.' },
+  { day: 'Day 04', meal: 'Chicken sausage + eggs · Turkey meatballs · Baked cod + greens', note: 'Lean protein, start to finish.' },
+  { day: 'Day 07', meal: 'Scrambled eggs + smoked chicken · Grilled sirloin · Chicken quinoa bowl', note: 'End of week one. Red meat, earned.' },
+  { day: 'Day 09', meal: 'Egg + chicken ham toast · Chicken shawarma bowl · Lamb ragu + lentils', note: 'Mediterranean week. Every bite counts.' },
+  { day: 'Day 12', meal: 'Masala omelette · Chicken Caesar wrap · Grilled prawn + asparagus', note: 'Clean, fast, no shortcuts on quality.' },
+  { day: 'Day 14', meal: 'Mid-cycle — optional cohort check-in', note: 'Casual, informal. Meet the other 39. Compare notes.' },
+  { day: 'Day 17', meal: 'Smoked salmon bagel · Pulled chicken + sweet potato · Turkey chilli', note: 'Slow-cooked, high-yield. Week three starts strong.' },
+  { day: 'Day 20', meal: 'Poached eggs + lean ham · Grilled chicken + farro · Beef tenderloin', note: 'Your body is already used to this rhythm.' },
+  { day: 'Day 22', meal: 'Egg bhurji wrap · Chicken pesto pasta · Pan-seared duck breast', note: 'The craving poll result from week two. We listened.' },
+  { day: 'Day 25', meal: 'Chicken keema + eggs · Harissa chicken + couscous · Baked sea bass', note: 'North African spice meets Bengaluru precision.' },
+  { day: 'Day 28', meal: "Chef's finale · Dessert drop · Cohort dinner", note: 'The 28th day. The cohort gathers. Cycle 02 begins tomorrow.' },
+];
+
 export default function Home() {
+  // Sample menu tab
+  const [menuType, setMenuType] = useState<'veg' | 'nonveg'>('veg');
+  const cycleMenu = menuType === 'veg' ? VEG_MENU : NONVEG_MENU;
   // Spots bar state
   const [spotsFill, setSpotsFill] = useState('0%');
   const [spotsText, setSpotsText] = useState('Checking availability…');
@@ -107,7 +142,7 @@ export default function Home() {
               Apply for membership
               <span className="arr" style={{ marginLeft: '6px' }}>→</span>
             </Link>
-            <a className="btn-ghost" href="#vessel">How it works ↓</a>
+            <a className="btn-ghost" href="#box">How it works ↓</a>
           </div>
           <div className="hero-numbers">
             <div className="hn-item">
@@ -123,7 +158,7 @@ export default function Home() {
               <span className="hn-lbl">Repeated dishes</span>
             </div>
             <div className="hn-item">
-              <span className="hn-val">5</span>
+              <span className="hn-val">3</span>
               <span className="hn-lbl">Meals per day</span>
             </div>
           </div>
@@ -188,65 +223,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* BOX SECTION */}
-      <section className="vessel-section sec-pad" id="vessel">
-        <div className="sec-inner">
-          <div className="vessel-grid">
-            <div>
-              <div className="eyebrow rev">Your box</div>
-              <h2 className="h2 rev d1">Not a container.<br /><em>A commitment.</em></h2>
-              <p className="body-lg rev d2" style={{ marginTop: '24px' }}>Your Kōsh box is ceramic-coated glass — built for food, not plastic. It is made specifically for you, with your name on it. At the end of your subscription, it does not go back to us. It goes home with you. Permanently yours.</p>
-              
-              <div className="vessel-steps">
-                <div className="vstep rev d2">
-                  <div className="vs-num">01</div>
-                  <div className="vs-content">
-                    <h4>Ceramic-coated glass, made for food</h4>
-                    <p>No leaching, no plastic, no compromise. Designed to hold heat, keep food fresh, and look like something worth opening.</p>
-                  </div>
-                </div>
-                <div className="vstep rev d3">
-                  <div className="vs-num">02</div>
-                  <div className="vs-content">
-                    <h4>Your name. Only yours.</h4>
-                    <p>Every box is individual to the member it is made for. No two are the same. A new member gets a new box — your box is never reused.</p>
-                  </div>
-                </div>
-                <div className="vstep rev d3">
-                  <div className="vs-num">03</div>
-                  <div className="vs-content">
-                    <h4>Portioned to your numbers</h4>
-                    <p>Same kitchen. Same menu. Different portion sizes, calibrated to your calorie target and macro split each day.</p>
-                  </div>
-                </div>
-                <div className="vstep rev d4">
-                  <div className="vs-num">04</div>
-                  <div className="vs-content">
-                    <h4>Yours forever at the end</h4>
-                    <p>When your subscription ends, the box is handed over to you. A lasting record of the cycle you committed to.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="vessel-art rev d1">
-              <div className="va-bg"></div>
-              <div className="va-inner">
-                <div className="va-steel-lid"></div>
-                <div className="va-steel-body">
-                  <div className="va-nameplate"><span>Priya Sharma</span></div>
-                </div>
-              </div>
-              <div className="va-note">
-                <p>Day 8 · Lunch</p>
-                <p style={{ marginTop: '4px' }}>Seared chicken breast · Quinoa tabbouleh · Roasted courgette</p>
-                <span>490 kcal · 44g protein</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* PROMISE */}
       <section className="promise-sec">
         <div className="promise-inner">
@@ -261,7 +237,7 @@ export default function Home() {
       </section>
 
       {/* 28-DAY CYCLE */}
-      <section className="cycle-sec sec-pad" id="cycle">
+      <section className={`cycle-sec sec-pad${menuType === 'nonveg' ? ' nonveg' : ''}`} id="cycle">
         <div className="sec-inner">
           <div className="cycle-head">
             <div className="rev">
@@ -269,25 +245,25 @@ export default function Home() {
               <h2 className="h2 light" style={{ marginTop: 0 }}>Sample menu.<br /><em>Nothing is fixed.</em></h2>
             </div>
             <div className="rev d1">
-              <p className="body-md" style={{ color: 'rgba(247,244,238,.35)' }}>Each 28-day cycle runs 140 different dishes across all five daily meals. The same dish does not appear twice in a cycle. The menu below is illustrative — actual dishes change with season, sourcing, and craving polls. No repeats. Ever.</p>
+              <p className="body-md" style={{ color: 'rgba(247,244,238,.35)' }}>Each 28-day cycle runs 84 different dishes across all three daily meals. The same dish does not appear twice in a cycle. The menu below is illustrative — actual dishes change with season, sourcing, and craving polls. No repeats. Ever.</p>
             </div>
           </div>
           
-          <div className="cycle-grid rev">
-            <div className="cday"><div className="cday-n">Day 01</div><div><div className="cday-meal">Egg white omelette · Grilled chicken breast · Zucchini stir-fry</div><div className="cday-note">Cycle begins. First box. Clean slate, high protein.</div></div></div>
-            <div className="cday"><div className="cday-n">Day 02</div><div><div className="cday-meal">Greek yoghurt bowl · Tuna brown rice bowl · Seared salmon</div><div className="cday-note">Omega-3 day. Light, fast, precise.</div></div></div>
-            <div className="cday"><div className="cday-n">Day 04</div><div><div className="cday-meal">Protein pancakes · Turkey meatballs · Baked cod + greens</div><div className="cday-note">First time a pancake will feel like a responsible decision.</div></div></div>
-            <div className="cday"><div className="cday-n">Day 07</div><div><div className="cday-meal">Scrambled eggs + smoked chicken · Grilled sirloin · Roast veg quinoa</div><div className="cday-note">End of week one. Red meat, earned.</div></div></div>
-            <div className="cday"><div className="cday-n">Day 09</div><div><div className="cday-meal">Cottage cheese toast · Chicken shawarma bowl · Lamb ragu + lentils</div><div className="cday-note">Mediterranean week. Every bite counts.</div></div></div>
-            <div className="cday"><div className="cday-n">Day 12</div><div><div className="cday-meal">Whey smoothie bowl · Chicken Caesar wrap · Grilled prawn + asparagus</div><div className="cday-note">Clean, fast, no shortcuts on quality.</div></div></div>
-            <div className="cday"><div className="cday-n">Day 14</div><div><div className="cday-meal">Mid-cycle — optional cohort check-in</div><div className="cday-note">Casual, informal. Meet the other 39. Compare notes.</div></div></div>
-            <div className="cday"><div className="cday-n">Day 17</div><div><div className="cday-meal">Smoked salmon bagel · Pulled chicken + sweet potato · Turkey chilli</div><div className="cday-note">Slow-cooked, high-yield. Week three starts strong.</div></div></div>
-            <div className="cday"><div className="cday-n">Day 20</div><div><div className="cday-meal">Poached eggs + lean ham · Grilled chicken + farro · Beef tenderloin</div><div className="cday-note">Your body is already used to this rhythm.</div></div></div>
-            <div className="cday"><div className="cday-n">Day 22</div><div><div className="cday-meal">Ricotta + berry bowl · Chicken pesto pasta · Pan-seared duck breast</div><div className="cday-note">The craving poll result from week two. We listened.</div></div></div>
-            <div className="cday"><div className="cday-n">Day 25</div><div><div className="cday-meal">Protein waffles · Harissa chicken + couscous · Baked sea bass</div><div className="cday-note">North African spice meets Bengaluru precision.</div></div></div>
-            <div className="cday"><div className="cday-n">Day 28</div><div><div className="cday-meal">Chef's finale · Dessert drop · Cohort dinner</div><div className="cday-note">The 28th day. The cohort gathers. Cycle 02 begins tomorrow.</div></div></div>
+          <div className="menu-tabs rev" role="tablist" aria-label="Menu type">
+            <button type="button" role="tab" aria-selected={menuType === 'veg'} className={`menu-tab veg${menuType === 'veg' ? ' active' : ''}`} onClick={() => setMenuType('veg')}>
+              <span className="menu-dot veg" /> Veg
+            </button>
+            <button type="button" role="tab" aria-selected={menuType === 'nonveg'} className={`menu-tab nonveg${menuType === 'nonveg' ? ' active' : ''}`} onClick={() => setMenuType('nonveg')}>
+              <span className="menu-dot nonveg" /> Non-veg
+            </button>
           </div>
-          <p className="cycle-fn rev">— 140 unique dishes per cycle · Zero repeats · Menu resets every 28 days —</p>
+
+          <div className="cycle-grid rev">
+            {cycleMenu.map((d) => (
+              <div className="cday" key={d.day}><div className="cday-n">{d.day}</div><div><div className="cday-meal">{d.meal}</div><div className="cday-note">{d.note}</div></div></div>
+            ))}
+          </div>
+          <p className="cycle-fn rev">— 84 unique dishes per cycle · Zero repeats · Menu resets every 28 days —</p>
         </div>
       </section>
 
@@ -297,7 +273,7 @@ export default function Home() {
           <div className="meals-head">
             <div className="rev">
               <div className="eyebrow">What's in your vessel</div>
-              <h2 className="h2" style={{ marginTop: 0 }}>Five meals.<br /><em>Full day covered.</em></h2>
+              <h2 className="h2" style={{ marginTop: 0 }}>Three meals.<br /><em>Full day covered.</em></h2>
             </div>
             <div className="rev d1">
               <p className="body-md">All meals are portioned to your calorie target and macro split. Same kitchen, same chef-quality dishes — your vessel gets the quantity your body actually needs that day.</p>
@@ -312,24 +288,12 @@ export default function Home() {
             </div>
             <div className="meal-item">
               <div className="meal-num">02</div>
-              <div className="meal-time">Morning snack · 10–11 am</div>
-              <div className="meal-name">Macro-counted, portable</div>
-              <div className="meal-desc">Cottage cheese with seeds, protein energy balls, turkey roll-ups. Bridges breakfast to lunch. Keeps energy stable.</div>
-            </div>
-            <div className="meal-item">
-              <div className="meal-num">03</div>
               <div className="meal-time">Lunch · 1–2 pm</div>
               <div className="meal-name">The main event</div>
               <div className="meal-desc">Grilled sirloin, seared salmon, chicken pesto, tuna niçoise, harissa lamb. Chef-quality, warm, substantial. Reheats in 4 minutes.</div>
             </div>
             <div className="meal-item">
-              <div className="meal-num">04</div>
-              <div className="meal-time">Evening snack · 4–5 pm</div>
-              <div className="meal-name">Light, satisfying, no spike</div>
-              <div className="meal-desc">Whipped cottage cheese, smoked turkey wraps, cucumber with hummus. Prevents the evening binge. Ready to eat.</div>
-            </div>
-            <div className="meal-item">
-              <div className="meal-num">05</div>
+              <div className="meal-num">03</div>
               <div className="meal-time">Dinner · 7–8 pm</div>
               <div className="meal-name">Refined, lighter, chef-quality</div>
               <div className="meal-desc">Pan-seared sea bass, duck breast, prawn with asparagus, baked cod. Lighter than lunch, higher in craft. Reheats in 4–5 min.</div>
@@ -344,32 +308,30 @@ export default function Home() {
           <div className="plans-head">
             <div className="rev">
               <div className="eyebrow">The membership</div>
-              <h2 className="h2" style={{ marginTop: 0 }}>One plan.<br /><em>All five meals.</em></h2>
+              <h2 className="h2" style={{ marginTop: 0 }}>One plan.<br /><em>All three meals.</em></h2>
             </div>
             <p className="body-md rev d1">The same kitchen-crafted menu goes to all 40 members — what changes is your portion. Your calorie target and macro split determine exactly how much of each dish lands in your box. Same quality, built for your numbers.</p>
           </div>
           <div className="plans-container rev d1">
             <div className="plan-card featured">
-              <div className="plan-tag pt-feat">Full day · 5 meals</div>
+              <div className="plan-tag pt-feat">Full day · 3 meals</div>
               <div className="plan-name">The Kōsh<br />Programme</div>
               <div className="plan-tagline">Every meal. Every day. All yours.</div>
-              <div className="plan-price">₹2,400</div>
-              <div className="plan-period">per day · billed per 28-day cycle</div>
+              <div className="plan-price">₹34,000</div>
+              <div className="plan-period">per month · billed monthly</div>
               <hr className="plan-div" />
               <ul className="plan-features">
                 <li>Breakfast — high-protein, portioned to your target</li>
-                <li>Morning snack — macro-counted, portable</li>
                 <li>Lunch — full plate, your calorie target</li>
-                <li>Evening snack — light, satisfying, no spike</li>
                 <li>Dinner — refined, chef-quality, lighter than lunch</li>
                 <li>Ceramic-coated glass box, your name on it, yours forever</li>
                 <li>Daily macro card with every delivery</li>
-                <li>28-day non-repeating menu — 140 unique dishes per cycle</li>
+                <li>28-day non-repeating menu — 84 unique dishes per cycle</li>
                 <li>Weekly macro summary every Sunday</li>
                 <li>Access to private @kosh.table community</li>
                 <li>Weekly craving personalisation poll</li>
               </ul>
-              <div className="plan-cycle">28 days: <b>₹67,200 / cycle</b></div>
+              <div className="plan-cycle">Monthly: <b>₹34,000 / month</b></div>
               <Link className="plan-btn" href="/apply">Apply for membership</Link>
             </div>
             
@@ -439,55 +401,49 @@ export default function Home() {
         </div>
       </section>
 
-      {/* COMMUNITY */}
-      <section className="comm-sec sec-pad" id="community">
+      {/* STAPLES */}
+      <section className="comm-sec sec-pad" id="staples">
         <div className="sec-inner">
           <div className="comm-grid">
             <div>
-              <div className="eyebrow rev">The Kōsh community</div>
-              <h2 className="h2 rev d1" style={{ marginTop: 0 }}>Private.<br /><em>Members only.</em></h2>
-              <p className="body-lg rev d2" style={{ marginTop: '24px' }}>We are building a fixed cohort of 40 people who are serious about eating right — and who can hold each other to it. The private <strong>@kosh.table</strong> Instagram account is the digital layer. The real community happens in person.</p>
-              
+              <div className="eyebrow rev">Kōsh staples</div>
+              <h2 className="h2 rev d1" style={{ marginTop: 0 }}>Our <em>staples.</em></h2>
+              <p className="body-lg rev d2" style={{ marginTop: '24px' }}>The sauces, spreads and snacks that go into every vessel — now available on their own. Made in small batches in the same kitchen, with the same ingredients and the same standards. No preservatives. No shortcuts.</p>
+
               <div className="comm-perks">
                 <div className="comm-perk">
                   <div className="cp-bullet">01</div>
                   <div className="cp-txt">
-                    <h4>@kosh.table Private Network</h4>
-                    <p>Exclusive digital space to connect, preview daily cycles, and participate in community voting.</p>
+                    <h4>Made fresh, in small batches</h4>
+                    <p>Prepared every week alongside member meals, so nothing sits on a shelf for long.</p>
                   </div>
                 </div>
                 <div className="comm-perk">
                   <div className="cp-bullet">02</div>
                   <div className="cp-txt">
-                    <h4>Monthly Cohort Gatherings</h4>
-                    <p>We host exclusive dinners and nutrition workshops for members at the end of each 28-day cycle.</p>
+                    <h4>Macros on every label</h4>
+                    <p>Calories, protein, carbs and fat listed per serving — so they fit into your day without guesswork.</p>
                   </div>
                 </div>
               </div>
+
+              <div className="rev d2" style={{ marginTop: '36px' }}>
+                {/* TODO: replace href with the Air Menu link */}
+                <a className="btn-fill" href="#">
+                  Place your order
+                  <span className="arr" style={{ marginLeft: '6px' }}>→</span>
+                </a>
+              </div>
             </div>
-            
+
             <div className="rev d1">
-              <div className="ig-mock">
-                <div className="ig-header">
-                  <div className="ig-avatar">K</div>
-                  <div>
-                    <div className="ig-name">@kosh.table</div>
-                    <div className="ig-sub">Private · Members only</div>
+              <div className="staples-grid">
+                {['Staple 01', 'Staple 02', 'Staple 03', 'Staple 04'].map((label) => (
+                  <div className="staple-ph" key={label}>
+                    <span>Image placeholder</span>
+                    <b>{label}</b>
                   </div>
-                  <div className="ig-badge">Members only</div>
-                </div>
-                <div className="ig-grid">
-                  <div className="ig-cell"><img src="https://images.unsplash.com/photo-1581299894007-aaa50297cf16?w=200&q=70&fit=crop" alt="" /><div className="ig-cell-label"><span>Founder story</span></div></div>
-                  <div className="ig-cell"><img src="https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=200&q=70&fit=crop" alt="" /><div className="ig-cell-label"><span>Kitchen prep</span></div></div>
-                  <div className="ig-cell"><img src="https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=200&q=70&fit=crop" alt="" /><div className="ig-cell-label"><span>Day 12</span></div></div>
-                  <div className="ig-cell"><img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=200&q=70&fit=crop" alt="" /><div className="ig-cell-label"><span>Cycle meetup</span></div></div>
-                  <div className="ig-cell"><img src="https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=200&q=70&fit=crop" alt="" /><div className="ig-cell-label"><span>Dessert drop</span></div></div>
-                  <div className="ig-cell"><img src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=200&q=70&fit=crop" alt="" /><div className="ig-cell-label"><span>Partner drops</span></div></div>
-                  <div className="ig-cell"><img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=200&q=70&fit=crop" alt="" /><div className="ig-cell-label"><span>Member meals</span></div></div>
-                  <div className="ig-cell"><img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=200&q=70&fit=crop" alt="" /><div className="ig-cell-label"><span>Community</span></div></div>
-                  <div className="ig-cell"><img src="https://images.unsplash.com/photo-1547592180-85f173990554?w=200&q=70&fit=crop" alt="" /><div className="ig-cell-label"><span>Cleanliness</span></div></div>
-                </div>
-                <div className="ig-footer">Follow request sent after your first delivery</div>
+                ))}
               </div>
             </div>
           </div>
@@ -501,7 +457,7 @@ export default function Home() {
             <div className="rev">
               <div className="eyebrow">Delivery zones</div>
               <h2 className="h2" style={{ marginTop: 0 }}>One delivery.<br /><em>Every morning.</em></h2>
-              <p className="body-lg" style={{ marginTop: '24px' }}>All meals leave our kitchen together — breakfast, snacks, lunch, and dinner — by 8 am, seven days a week including weekends.</p>
+              <p className="body-lg" style={{ marginTop: '24px' }}>All meals leave our kitchen together — breakfast, lunch, and dinner — by 8 am, seven days a week including weekends.</p>
               
               <div className="zones">
                 <div className="zone-row">
@@ -512,20 +468,16 @@ export default function Home() {
                   <div className="zone-l"><div className="zone-dot zd-primary"></div><div><div className="zone-name">Dollars Colony</div><div className="zone-sub">All sectors</div></div></div>
                   <span className="zone-badge">Free delivery</span>
                 </div>
-                <div className="zone-row" style={{ opacity: 0.3 }}>
-                  <div className="zone-l"><div className="zone-dot zd-inactive"></div><div><div className="zone-name">Other areas</div><div className="zone-sub">Not currently served</div></div></div>
-                  <span style={{ fontSize: '12px', color: 'var(--stone)' }}>Waitlist only</span>
+                <div className="zone-row">
+                  <div className="zone-l"><div className="zone-dot zd-inactive"></div><div><div className="zone-name">Other areas</div><div className="zone-sub">We currently deliver within Bangalore only</div></div></div>
+                  <span style={{ fontSize: '12px', color: 'var(--stone)' }}>Bangalore only</span>
                 </div>
               </div>
               
               <div style={{ marginTop: '16px', padding: '18px 22px', border: '1px solid var(--sand)' }}>
                 <p style={{ fontSize: '13px', color: 'var(--stone)', lineHeight: 1.7 }}>We are hard-capped at <b style={{ color: 'var(--ink)' }}>40 households</b>. This is the number at which the kitchen can maintain precision. When the list is full, it is closed.</p>
               </div>
-              
-              <div className="vessel-policy">
-                <div className="vp-label">Your box</div>
-                <p className="vp-txt">Your ceramic-coated glass box is made for you and only you. It travels to our kitchen each night, is sanitised overnight, and returns the next morning with your meals. At the end of your subscription, it is yours to keep — permanently.</p>
-              </div>
+
             </div>
             
             <div className="rev d1" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -533,9 +485,7 @@ export default function Home() {
                 <div className="eyebrow" style={{ marginBottom: '20px' }}>How the day works</div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'baseline', gap: '20px', padding: '16px 0', borderBottom: '1px solid var(--sand)' }}><span style={{ fontFamily: 'var(--ff)', fontStyle: 'italic', fontSize: '13px', color: 'var(--sand)', minWidth: '72px' }}>7:30 am</span><span style={{ fontSize: '13.5px', color: 'var(--stone)' }}>Box delivered. Breakfast ready in 3 minutes.</span></div>
-                  <div style={{ display: 'flex', alignItems: 'baseline', gap: '20px', padding: '16px 0', borderBottom: '1px solid var(--sand)' }}><span style={{ fontFamily: 'var(--ff)', fontStyle: 'italic', fontSize: '13px', color: 'var(--sand)', minWidth: '72px' }}>10:30 am</span><span style={{ fontSize: '13.5px', color: 'var(--stone)' }}>Morning snack. Ready to eat.</span></div>
                   <div style={{ display: 'flex', alignItems: 'baseline', gap: '20px', padding: '16px 0', borderBottom: '1px solid var(--sand)' }}><span style={{ fontFamily: 'var(--ff)', fontStyle: 'italic', fontSize: '13px', color: 'var(--sand)', minWidth: '72px' }}>1:00 pm</span><span style={{ fontSize: '13.5px', color: 'var(--stone)' }}>Lunch. Reheats in 4 minutes.</span></div>
-                  <div style={{ display: 'flex', alignItems: 'baseline', gap: '20px', padding: '16px 0', borderBottom: '1px solid var(--sand)' }}><span style={{ fontFamily: 'var(--ff)', fontStyle: 'italic', fontSize: '13px', color: 'var(--sand)', minWidth: '72px' }}>4:30 pm</span><span style={{ fontSize: '13.5px', color: 'var(--stone)' }}>Evening snack. Ready to eat.</span></div>
                   <div style={{ display: 'flex', alignItems: 'baseline', gap: '20px', padding: '16px 0', borderBottom: '1px solid var(--sand)' }}><span style={{ fontFamily: 'var(--ff)', fontStyle: 'italic', fontSize: '13px', color: 'var(--sand)', minWidth: '72px' }}>7:30 pm</span><span style={{ fontSize: '13.5px', color: 'var(--stone)' }}>Dinner. Reheats in 4–5 minutes.</span></div>
                   <div style={{ display: 'flex', alignItems: 'baseline', gap: '20px', padding: '16px 0' }}><span style={{ fontFamily: 'var(--ff)', fontStyle: 'italic', fontSize: '13px', color: 'var(--sand)', minWidth: '72px' }}>9:00 pm</span><span style={{ fontSize: '13.5px', color: 'var(--stone)' }}>Box left at door. Collected overnight. Back tomorrow.</span></div>
                 </div>
@@ -685,7 +635,7 @@ export default function Home() {
                 <div className="aperk"><b>40</b>Members. Hard cap. Total. Always.</div>
                 <div className="aperk"><b>0</b>Plastic. In any form. Ever.</div>
                 <div className="aperk"><b>28</b>Days before a dish appears again.</div>
-                <div className="aperk"><b>5</b>Meals per day. Full day covered.</div>
+                <div className="aperk"><b>3</b>Meals per day. Full day covered.</div>
                 <div className="aperk"><b>1</b>Box. Named. Yours forever.</div>
               </div>
               <div style={{ marginTop: '24px', padding: '18px 22px', border: '1px solid rgba(247,244,238,.06)', background: 'rgba(247,244,238,.02)' }}>
@@ -732,10 +682,9 @@ export default function Home() {
             <div className="ft-col">
               <h5>Navigate</h5>
               <ul className="ft-links">
-                <li><a href="#vessel">The box</a></li>
                 <li><a href="#cycle">28-day cycle</a></li>
                 <li><a href="#plans">Plan</a></li>
-                <li><a href="#community">Community</a></li>
+                <li><a href="#staples">Staples</a></li>
                 <li><a href="#delivery">Delivery</a></li>
                 <li><Link href="/apply">Apply</Link></li>
               </ul>

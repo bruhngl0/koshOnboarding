@@ -2136,7 +2136,61 @@ nav.scrolled {
   background: var(--forest);
   position: relative;
   overflow: hidden;
+  transition: background-color 0.5s ease;
 }
+
+.landing-page .cycle-sec.nonveg {
+  background: #5E1A17;
+}
+
+.landing-page .menu-tabs {
+  display: inline-flex;
+  gap: 6px;
+  padding: 5px;
+  margin-bottom: 40px;
+  background: rgba(247, 244, 238, 0.08);
+  border: 1px solid rgba(247, 244, 238, 0.2);
+  border-radius: 999px;
+}
+
+.landing-page .menu-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(247, 244, 238, 0.8);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.landing-page .menu-tab:hover {
+  color: #F7F4EE;
+  background: rgba(247, 244, 238, 0.08);
+}
+
+.landing-page .menu-tab:focus { outline: none; }
+.landing-page .menu-tab:focus-visible { outline: 2px solid #F7F4EE; outline-offset: 2px; }
+
+.landing-page .menu-tab.active { color: #fff; }
+.landing-page .menu-tab.active.veg { background: #3F8A3A; }
+.landing-page .menu-tab.active.nonveg { background: #C8372D; }
+.landing-page .menu-tab.active .menu-dot { background: #fff; }
+
+.landing-page .menu-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.landing-page .menu-dot.veg { background: #5CC157; }
+.landing-page .menu-dot.nonveg { background: #F0584C; }
 
 .landing-page .cycle-sec::after {
   content: '28';
@@ -2829,6 +2883,41 @@ nav.scrolled {
   font-size: 17px;
   color: var(--char);
   line-height: 1.65;
+}
+
+/* ── STAPLES ── */
+.landing-page .staples-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.landing-page .staple-ph {
+  aspect-ratio: 1;
+  border: 1px dashed var(--sand);
+  border-radius: 8px;
+  background: rgba(139, 90, 43, 0.04);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.landing-page .staple-ph span {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--stone);
+}
+
+.landing-page .staple-ph b {
+  font-family: var(--ff);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 16px;
+  color: var(--char);
 }
 
 /* ── COMMUNITY ── */

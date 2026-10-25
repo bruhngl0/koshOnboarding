@@ -43,10 +43,9 @@ export default function Navbar() {
         <Link className="logo" href="/">Kō<em>sh</em></Link>
         <div className="nav-r">
           <ul className="nav-links">
-            <li><Link href={getLinkHref('#vessel')}>The box</Link></li>
             <li><Link href={getLinkHref('#cycle')}>28 days</Link></li>
             <li><Link href={getLinkHref('#plans')}>Plan</Link></li>
-            <li><Link href={getLinkHref('#community')}>Community</Link></li>
+            <li><Link href={getLinkHref('#staples')}>Staples</Link></li>
             <li><Link href={getLinkHref('#delivery')}>Delivery</Link></li>
             <li>
               <Link 
@@ -70,10 +69,9 @@ export default function Navbar() {
 
       {/* MOBILE MENU */}
       <div className={`mob-menu ${isMenuOpen ? 'open' : ''}`}>
-        <Link href={getLinkHref('#vessel')} onClick={closeMobileMenu}>The box</Link>
         <Link href={getLinkHref('#cycle')} onClick={closeMobileMenu}>28 days</Link>
         <Link href={getLinkHref('#plans')} onClick={closeMobileMenu}>Plan</Link>
-        <Link href={getLinkHref('#community')} onClick={closeMobileMenu}>Community</Link>
+        <Link href={getLinkHref('#staples')} onClick={closeMobileMenu}>Staples</Link>
         <Link href={getLinkHref('#delivery')} onClick={closeMobileMenu}>Delivery</Link>
         <Link href="/apply" onClick={closeMobileMenu}>Apply</Link>
       </div>

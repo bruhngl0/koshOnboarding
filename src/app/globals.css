@@ -2886,38 +2886,122 @@ nav.scrolled {
 }
 
 /* ── STAPLES ── */
+.landing-page .staples-cta {
+  display: flex;
+  justify-content: center;
+  margin-top: 48px;
+}
+
 .landing-page .staples-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 280px;
+  gap: 14px;
+  margin-top: 72px;
 }
 
-.landing-page .staple-ph {
-  aspect-ratio: 1;
-  border: 1px dashed var(--sand);
-  border-radius: 8px;
-  background: rgba(139, 90, 43, 0.04);
+.landing-page .staple-card {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--sand);
+  isolation: isolate;
+}
+
+.landing-page .staple-card.featured {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+.landing-page .staple-card.featured.alt {
+  grid-column: 3 / span 2;
+  grid-row: 3 / span 2;
+}
+
+.landing-page .staple-card img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 40%;
+  transition: transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.landing-page .staple-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(22, 20, 15, 0.82) 0%, rgba(22, 20, 15, 0.25) 38%, transparent 60%);
+  transition: opacity 0.5s ease;
+  z-index: 1;
+}
+
+.landing-page .staple-card:hover img {
+  transform: scale(1.06);
+}
+
+.landing-page .staple-card figcaption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  padding: 20px 22px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  text-align: center;
+  gap: 4px;
+  color: #F7F4EE;
 }
 
-.landing-page .staple-ph span {
-  font-size: 10px;
-  letter-spacing: 0.1em;
+.landing-page .staple-tag {
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--stone);
+  color: rgba(247, 244, 238, 0.7);
 }
 
-.landing-page .staple-ph b {
+.landing-page .staple-name {
   font-family: var(--ff);
-  font-style: italic;
+  font-size: 22px;
   font-weight: 400;
-  font-size: 16px;
-  color: var(--char);
+  line-height: 1.15;
+}
+
+.landing-page .staple-card.featured figcaption {
+  padding: 32px 34px;
+}
+
+.landing-page .staple-card.featured .staple-name {
+  font-size: 40px;
+  font-style: italic;
+}
+
+.landing-page .staple-card.featured .staple-tag {
+  font-size: 10.5px;
+  color: var(--gold, #C8A96A);
+}
+
+@media (max-width: 1024px) {
+  .landing-page .staples-grid { grid-template-columns: repeat(3, 1fr); grid-auto-rows: 240px; }
+  .landing-page .staple-card.featured.main { grid-column: span 3; }
+  .landing-page .staple-card.featured.alt { grid-column: auto; grid-row: auto; }
+  .landing-page .staple-card.featured.alt figcaption { padding: 20px 22px; }
+  .landing-page .staple-card.featured.alt .staple-name { font-size: 22px; font-style: normal; }
+}
+
+@media (max-width: 640px) {
+  .landing-page .staples-grid { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 210px; gap: 10px; margin-top: 44px; }
+  .landing-page .staple-card figcaption { padding: 14px; }
+  .landing-page .staple-name { font-size: 17px; }
+  .landing-page .staple-card.featured figcaption { padding: 20px; }
+  .landing-page .staple-card.featured .staple-name { font-size: 28px; }
+  .landing-page .staple-card.featured.main { grid-column: span 2; }
+  .landing-page .staple-card.featured.alt { grid-column: span 2; grid-row: span 2; }
+  .landing-page .staple-card.featured.alt figcaption { padding: 20px; }
+  .landing-page .staple-card.featured.alt .staple-name { font-size: 28px; font-style: italic; }
 }
 
 /* ── COMMUNITY ── */

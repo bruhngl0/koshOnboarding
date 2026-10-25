@@ -36,6 +36,19 @@ const NONVEG_MENU: CycleDay[] = [
   { day: 'Day 28', meal: "Chef's finale · Dessert drop · Cohort dinner", note: 'The 28th day. The cohort gathers. Cycle 02 begins tomorrow.' },
 ];
 
+const STAPLES = [
+  { name: 'Dosa Batter', tag: 'Batter · Bestseller', src: '/staples/dosa-batter.jpg', feature: 'main' },
+  { name: 'Idly Batter', tag: 'Batter', src: '/staples/idly-batter.jpg' },
+  { name: 'Vada Batter', tag: 'Batter', src: '/staples/vada-batter.jpg' },
+  { name: 'Adai Batter', tag: 'Batter', src: '/staples/adai-batter.jpg' },
+  { name: 'Pesarattu Batter', tag: 'Batter', src: '/staples/peserattu-batter.jpg' },
+  { name: 'Ragi Batter', tag: 'Millet batter', src: '/staples/ragi-batter.jpg' },
+  { name: 'Jowar Batter', tag: 'Millet batter', src: '/staples/jowar-batter.jpg' },
+  { name: 'High Protein Paneer', tag: 'Fresh paneer · New', src: '/staples/high-protein-paneer.jpg', feature: 'alt' },
+  { name: 'Akki Rotti', tag: 'Rotti kit', src: '/staples/akki-rotti.jpg' },
+  { name: 'Paneer', tag: 'Fresh paneer', src: '/staples/paneer.jpg' },
+];
+
 export default function Home() {
   // Sample menu tab
   const [menuType, setMenuType] = useState<'veg' | 'nonveg'>('veg');
@@ -408,44 +421,47 @@ export default function Home() {
             <div>
               <div className="eyebrow rev">Kōsh staples</div>
               <h2 className="h2 rev d1" style={{ marginTop: 0 }}>Our <em>staples.</em></h2>
-              <p className="body-lg rev d2" style={{ marginTop: '24px' }}>The sauces, spreads and snacks that go into every vessel — now available on their own. Made in small batches in the same kitchen, with the same ingredients and the same standards. No preservatives. No shortcuts.</p>
+              <p className="body-lg rev d2" style={{ marginTop: '24px' }}>Fresh batters, paneer and rotti from the Kōsh kitchen — now available for your home. Made in small batches with the same ingredients and the same standards as every member meal. No preservatives. No shortcuts.</p>
+            </div>
 
-              <div className="comm-perks">
+            <div>
+              <div className="comm-perks rev d1" style={{ marginTop: 0 }}>
                 <div className="comm-perk">
                   <div className="cp-bullet">01</div>
                   <div className="cp-txt">
                     <h4>Made fresh, in small batches</h4>
-                    <p>Prepared every week alongside member meals, so nothing sits on a shelf for long.</p>
+                    <p>Prepared alongside member meals, so nothing sits on a shelf for long.</p>
                   </div>
                 </div>
                 <div className="comm-perk">
                   <div className="cp-bullet">02</div>
                   <div className="cp-txt">
-                    <h4>Macros on every label</h4>
-                    <p>Calories, protein, carbs and fat listed per serving — so they fit into your day without guesswork.</p>
+                    <h4>Clean ingredients</h4>
+                    <p>Traditional grains and lentils, fresh milk paneer. Nothing added that you would not use at home.</p>
                   </div>
                 </div>
               </div>
 
-              <div className="rev d2" style={{ marginTop: '36px' }}>
-                {/* TODO: replace href with the Air Menu link */}
-                <a className="btn-fill" href="#">
-                  Place your order
-                  <span className="arr" style={{ marginLeft: '6px' }}>→</span>
-                </a>
-              </div>
             </div>
+          </div>
 
-            <div className="rev d1">
-              <div className="staples-grid">
-                {['Staple 01', 'Staple 02', 'Staple 03', 'Staple 04'].map((label) => (
-                  <div className="staple-ph" key={label}>
-                    <span>Image placeholder</span>
-                    <b>{label}</b>
-                  </div>
-                ))}
-              </div>
-            </div>
+          <div className="staples-grid rev d1">
+            {STAPLES.map((item) => (
+              <figure className={`staple-card${item.feature ? ` featured ${item.feature}` : ''}`} key={item.src}>
+                <img src={item.src} alt={`Kōsh ${item.name}`} loading="lazy" />
+                <figcaption>
+                  <span className="staple-tag">{item.tag}</span>
+                  <span className="staple-name">{item.name}</span>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+
+          <div className="staples-cta rev d1">
+            <a className="btn-fill" href="https://airmenus.in/kosh/order" target="_blank" rel="noopener noreferrer">
+              Place your order
+              <span className="arr" style={{ marginLeft: '6px' }}>→</span>
+            </a>
           </div>
         </div>
       </section>

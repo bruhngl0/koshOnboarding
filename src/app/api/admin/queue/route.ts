@@ -111,7 +111,8 @@ export const GET = withErrorHandler(async () => {
       email: { pending: 0, processing: 0, completed: 0, failed: 0 },
       pdf: { pending: 0, processing: 0, completed: 0, failed: 0 },
       webhook: { pending: 0, processing: 0, completed: 0, failed: 0 },
-      report: { pending: 0, processing: 0, completed: 0, failed: 0 }
+      report: { pending: 0, processing: 0, completed: 0, failed: 0 },
+      'subscriber-sync': { pending: 0, processing: 0, completed: 0, failed: 0 }
     };
 
     result.forEach((row) => {

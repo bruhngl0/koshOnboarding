@@ -44,6 +44,8 @@ export default function AdminPortal() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSub, setSelectedSub] = useState<Submission | null>(null);
   const [statusUpdating, setStatusUpdating] = useState(false);
+  const [opsSyncing, setOpsSyncing] = useState(false);
+  const [opsSyncMessage, setOpsSyncMessage] = useState<{ tone: 'ok' | 'error'; text: string } | null>(null);
 
   const [activeTab, setActiveTab] = useState<'submissions' | 'queue'>('submissions');
   const [queueMode, setQueueMode] = useState<string>('Database-backed Persistent Queue');
@@ -170,6 +172,35 @@ export default function AdminPortal() {
     }
   };
 
+  // Push every confirmed applicant to Kōsh Operations (backfill / retry).
+  const handleOpsSync = async () => {
+    setOpsSyncing(true);
+    setOpsSyncMessage(null);
+    try {
+      const res = await fetch('/api/admin/sync-subscribers', { method: 'POST' });
+      const data = await res.json().catch(() => null);
+      const result = data?.data;
+      if (result && data.success) {
+        setOpsSyncMessage({
+          tone: 'ok',
+          text: result.total
+            ? `Synced ${result.total} confirmed applicant${result.total === 1 ? '' : 's'} to Kōsh Operations (${result.created} new, ${result.updated} updated).`
+            : 'No confirmed applicants to sync yet.',
+        });
+      } else {
+        const failed = result?.failures?.map((f: { ref: string }) => f.ref).join(', ');
+        setOpsSyncMessage({
+          tone: 'error',
+          text: (data?.error?.message || 'Sync failed.') + (failed ? ` Failed: ${failed}.` : ''),
+        });
+      }
+    } catch {
+      setOpsSyncMessage({ tone: 'error', text: 'Could not reach the server to sync.' });
+    } finally {
+      setOpsSyncing(false);
+    }
+  };
+
   // Filter submissions by name, phone or reference code
   const filteredSubmissions = submissions.filter((sub) => {
     const query = searchQuery.toLowerCase().trim();
@@ -288,9 +319,28 @@ export default function AdminPortal() {
                 </div>
               </section>
 
+              {opsSyncMessage && (
+                <div
+                  role={opsSyncMessage.tone === 'error' ? 'alert' : 'status'}
+                  className={opsSyncMessage.tone === 'error' ? 'admin-error-box' : undefined}
+                  style={opsSyncMessage.tone === 'ok' ? { padding: '10px 14px', marginBottom: '16px', borderRadius: '4px', background: '#CEEAD6', color: '#1A4D2E' } : { marginBottom: '16px' }}
+                >
+                  {opsSyncMessage.text}
+                </div>
+              )}
+
               {/* TABLE HEAD */}
               <div className="admin-table-head">
                 <h2>Onboarding Submissions ({totalSubmissions})</h2>
+                <button
+                  type="button"
+                  onClick={handleOpsSync}
+                  disabled={opsSyncing}
+                  title="Create or refresh a subscriber in Kōsh Operations for every confirmed applicant"
+                  style={{ padding: '8px 14px', borderRadius: '4px', cursor: opsSyncing ? 'wait' : 'pointer', background: 'transparent', color: 'var(--forest)', border: '1px solid var(--forest)', whiteSpace: 'nowrap' }}
+                >
+                  {opsSyncing ? 'Syncing…' : '⇄ Sync confirmed to Ops'}
+                </button>
                 <div className="admin-search-wrap">
                   <input
                     type="text"

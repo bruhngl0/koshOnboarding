@@ -3,6 +3,7 @@ import { db, readDb } from '@/db';
 import { onboardingSubmissions } from '@/db/schema';
 import { sql, desc, eq } from 'drizzle-orm';
 import { cookies } from 'next/headers';
+import { after } from 'next/server';
 import { addJob, processDbJobQueue } from '@/lib/queue';
 import { z } from 'zod/v4';
 import { apiResponse } from '@/lib/response';
@@ -275,18 +276,27 @@ export const PUT = withErrorHandler(async (request: Request) => {
     .set({ status })
     .where(eq(onboardingSubmissions.id, id));
 
-  // If transitioned from pending -> confirmed, queue the confirmation email job
+  // If transitioned from pending -> confirmed, queue the follow-up jobs
   if (status === 'confirmed' && submission.status !== 'confirmed') {
+    // Create the subscriber in Kōsh Operations. No fixed job id: the
+    // Operations side upserts on the submission id, so a re-confirm after a
+    // revert simply refreshes the subscriber with the latest details.
+    await addJob('subscriber-sync', { submissionId: id });
+
     await addJob('email', {
       email: submission.email,
       name: submission.name,
       ref: submission.ref
     }, `email-confirm-${submission.ref}`);
 
-    // Fire off database queue processor as a fallback (runs only if Redis is not active)
-    processDbJobQueue().catch((err) => {
-      console.error('[BACKGROUND QUEUE PROCESSOR ERROR] Failed to run database jobs:', err);
-    });
+    // Without Redis, jobs live in the database and are processed here. `after`
+    // keeps the function alive until they finish; a bare fire-and-forget
+    // promise is frozen as soon as a serverless response is sent.
+    after(() =>
+      processDbJobQueue().catch((err) => {
+        console.error('[BACKGROUND QUEUE PROCESSOR ERROR] Failed to run database jobs:', err);
+      })
+    );
   }
 
   // Invalidate cached lists on update to force fresh retrieve
